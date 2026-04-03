@@ -5,8 +5,13 @@ require __DIR__ . '/../vendor/autoload.php';
 $app = require_once __DIR__ . '/../bootstrap/app.php';
 $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
 
+// Pour les users, on doit inclure le password qui est hidden par défaut
+$users = \App\Models\User::all()->map(function($user) {
+    return array_merge($user->toArray(), ['password' => $user->password]);
+})->toArray();
+
 $data = [
-    'users' => \App\Models\User::all()->toArray(),
+    'users' => $users,
     'conducteurs' => \App\Models\Conducteur::all()->toArray(),
     'bus' => \App\Models\Bus::all()->toArray(),
     'types_bus' => \App\Models\TypeBus::all()->toArray(),

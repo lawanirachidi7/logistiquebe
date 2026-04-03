@@ -8,7 +8,8 @@
             "created_at": "2026-04-03T18:11:16.000000Z",
             "updated_at": "2026-04-03T18:11:16.000000Z",
             "role": "admin",
-            "actif": true
+            "actif": true,
+            "password": "$2y$12$ACSDkVn5XY4ReIedp1x5GOaYlSTC14M2j0r9vCUoTIIud\/d43FcyG"
         }
     ],
     "conducteurs": [
