@@ -12,9 +12,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // SQLite ne supporte pas DROP INDEX directement via Schema
-        // On doit utiliser une requête SQL brute
-        DB::statement('DROP INDEX IF EXISTS lignes_nom_unique');
+        // Supprimer l'ancien index unique s'il existe (syntaxe MySQL)
+        try {
+            DB::statement('ALTER TABLE lignes DROP INDEX lignes_nom_unique');
+        } catch (\Exception $e) {
+            // Index n'existe pas, on continue
+        }
         
         // Créer un nouvel index unique composite sur nom + horaire
         Schema::table('lignes', function (Blueprint $table) {
