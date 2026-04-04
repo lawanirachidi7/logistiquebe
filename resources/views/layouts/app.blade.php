@@ -1415,6 +1415,42 @@
                         </a>
                     </li>
                 </ul>
+
+                <div class="sidebar-menu-title">Repos & Fatigue</div>
+                <ul class="sidebar-nav">
+                    <li class="sidebar-nav-item">
+                        <a href="{{ route('repos.dashboard') }}" class="sidebar-nav-link {{ request()->routeIs('repos.dashboard') ? 'active' : '' }}">
+                            <i class="fas fa-heartbeat"></i>
+                            <span>Dashboard Fatigue</span>
+                            @php
+                                $alertesCritiques = \App\Models\Conducteur::where('actif', true)->get()
+                                    ->filter(fn($c) => !$c->estEnRepos() && $c->getNiveauFatigue() === 'rouge')
+                                    ->count();
+                            @endphp
+                            @if($alertesCritiques > 0)
+                                <span class="badge bg-danger">{{ $alertesCritiques }}</span>
+                            @endif
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="{{ route('repos.index') }}" class="sidebar-nav-link {{ request()->routeIs('repos.index') ? 'active' : '' }}">
+                            <i class="fas fa-bed"></i>
+                            <span>Gestion des Repos</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
+                        <a href="{{ route('repos.en-attente') }}" class="sidebar-nav-link {{ request()->routeIs('repos.en-attente') ? 'active' : '' }}">
+                            <i class="fas fa-clock"></i>
+                            <span>Repos en attente</span>
+                            @php
+                                $reposEnAttente = \App\Models\ReposConducteur::enAttente()->count();
+                            @endphp
+                            @if($reposEnAttente > 0)
+                                <span class="badge bg-warning">{{ $reposEnAttente }}</span>
+                            @endif
+                        </a>
+                    </li>
+                </ul>
                 
                 @auth
                 @if(auth()->user()->canAccessSettings())

@@ -34,6 +34,7 @@ class CritereProgrammation extends Model
     const CATEGORIE_BUS = 'bus';
     const CATEGORIE_REGLES = 'regles';
     const CATEGORIE_VALIDATION = 'validation';
+    const CATEGORIE_FATIGUE = 'fatigue';
 
     /**
      * Types de valeurs
@@ -140,6 +141,7 @@ class CritereProgrammation extends Model
             self::CATEGORIE_BUS => 'Gestion des Bus',
             self::CATEGORIE_REGLES => 'Règles de Programmation',
             self::CATEGORIE_VALIDATION => 'Validation & Contrôles',
+            self::CATEGORIE_FATIGUE => 'Fatigue & Repos',
         ];
     }
 
@@ -154,6 +156,7 @@ class CritereProgrammation extends Model
             self::CATEGORIE_BUS => 'fa-bus',
             self::CATEGORIE_REGLES => 'fa-cogs',
             self::CATEGORIE_VALIDATION => 'fa-check-circle',
+            self::CATEGORIE_FATIGUE => 'fa-battery-half',
         ];
     }
 
@@ -395,6 +398,140 @@ class CritereProgrammation extends Model
                 'valeur_defaut' => '1',
                 'actif' => true,
                 'ordre' => 2,
+            ],
+
+            // === FATIGUE & REPOS ===
+            [
+                'cle' => 'coef_fatigue_voyage_nuit',
+                'libelle' => 'Coefficient fatigue voyage nuit',
+                'description' => 'Points de fatigue ajoutés par voyage de nuit consécutif',
+                'categorie' => self::CATEGORIE_FATIGUE,
+                'type' => self::TYPE_INTEGER,
+                'valeur' => '15',
+                'valeur_defaut' => '15',
+                'actif' => true,
+                'ordre' => 1,
+            ],
+            [
+                'cle' => 'coef_fatigue_voyage_jour',
+                'libelle' => 'Coefficient fatigue voyage jour',
+                'description' => 'Points de fatigue ajoutés par voyage de jour consécutif',
+                'categorie' => self::CATEGORIE_FATIGUE,
+                'type' => self::TYPE_INTEGER,
+                'valeur' => '8',
+                'valeur_defaut' => '8',
+                'actif' => true,
+                'ordre' => 2,
+            ],
+            [
+                'cle' => 'coef_fatigue_jour_travail',
+                'libelle' => 'Coefficient fatigue jour travail',
+                'description' => 'Points de fatigue ajoutés par jour de travail sans repos',
+                'categorie' => self::CATEGORIE_FATIGUE,
+                'type' => self::TYPE_INTEGER,
+                'valeur' => '5',
+                'valeur_defaut' => '5',
+                'actif' => true,
+                'ordre' => 3,
+            ],
+            [
+                'cle' => 'coef_recuperation_repos',
+                'libelle' => 'Points récupérés après repos',
+                'description' => 'Points de fatigue soustraits après une période de repos',
+                'categorie' => self::CATEGORIE_FATIGUE,
+                'type' => self::TYPE_INTEGER,
+                'valeur' => '-30',
+                'valeur_defaut' => '-30',
+                'actif' => true,
+                'ordre' => 4,
+            ],
+            [
+                'cle' => 'seuil_fatigue_jaune',
+                'libelle' => 'Seuil niveau JAUNE',
+                'description' => 'Score à partir duquel le niveau passe à jaune (attention)',
+                'categorie' => self::CATEGORIE_FATIGUE,
+                'type' => self::TYPE_INTEGER,
+                'valeur' => '50',
+                'valeur_defaut' => '50',
+                'actif' => true,
+                'ordre' => 5,
+            ],
+            [
+                'cle' => 'seuil_fatigue_orange',
+                'libelle' => 'Seuil niveau ORANGE',
+                'description' => 'Score à partir duquel le niveau passe à orange (recommandé repos)',
+                'categorie' => self::CATEGORIE_FATIGUE,
+                'type' => self::TYPE_INTEGER,
+                'valeur' => '70',
+                'valeur_defaut' => '70',
+                'actif' => true,
+                'ordre' => 6,
+            ],
+            [
+                'cle' => 'seuil_fatigue_rouge',
+                'libelle' => 'Seuil niveau ROUGE',
+                'description' => 'Score à partir duquel le niveau passe à rouge (repos obligatoire)',
+                'categorie' => self::CATEGORIE_FATIGUE,
+                'type' => self::TYPE_INTEGER,
+                'valeur' => '85',
+                'valeur_defaut' => '85',
+                'actif' => true,
+                'ordre' => 7,
+            ],
+            [
+                'cle' => 'max_nuits_consecutives',
+                'libelle' => 'Maximum nuits consécutives',
+                'description' => 'Nombre max de voyages de nuit consécutifs avant repos obligatoire',
+                'categorie' => self::CATEGORIE_FATIGUE,
+                'type' => self::TYPE_INTEGER,
+                'valeur' => '3',
+                'valeur_defaut' => '3',
+                'actif' => true,
+                'ordre' => 8,
+            ],
+            [
+                'cle' => 'max_jours_sans_repos',
+                'libelle' => 'Maximum jours sans repos',
+                'description' => 'Nombre max de jours de travail consécutifs avant repos obligatoire',
+                'categorie' => self::CATEGORIE_FATIGUE,
+                'type' => self::TYPE_INTEGER,
+                'valeur' => '6',
+                'valeur_defaut' => '6',
+                'actif' => true,
+                'ordre' => 9,
+            ],
+            [
+                'cle' => 'max_heures_semaine',
+                'libelle' => 'Maximum heures/semaine',
+                'description' => 'Nombre max d\'heures de conduite par semaine',
+                'categorie' => self::CATEGORIE_FATIGUE,
+                'type' => self::TYPE_INTEGER,
+                'valeur' => '48',
+                'valeur_defaut' => '48',
+                'actif' => true,
+                'ordre' => 10,
+            ],
+            [
+                'cle' => 'repos_auto_actif',
+                'libelle' => 'Repos automatique activé',
+                'description' => 'Générer automatiquement des repos quand le niveau devient rouge',
+                'categorie' => self::CATEGORIE_FATIGUE,
+                'type' => self::TYPE_BOOLEAN,
+                'valeur' => '1',
+                'valeur_defaut' => '1',
+                'actif' => true,
+                'ordre' => 11,
+            ],
+            [
+                'cle' => 'bloquer_programmation_rouge',
+                'libelle' => 'Bloquer si niveau rouge',
+                'description' => 'Empêcher de programmer un conducteur avec un niveau de fatigue rouge',
+                'categorie' => self::CATEGORIE_FATIGUE,
+                'type' => self::TYPE_BOOLEAN,
+                'valeur' => '1',
+                'valeur_defaut' => '1',
+                'actif' => true,
+                'ordre' => 12,
             ],
         ];
     }

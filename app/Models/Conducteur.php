@@ -3,12 +3,30 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Services\FatigueService;
+use Carbon\Carbon;
 
 class Conducteur extends Model
 {
     protected $fillable = [
         'nom', 'prenom', 'ville_actuelle', 'famille_hors_parakou', 'specialiste_nuit', 'remplacant_nuit', 'actif'
     ];
+
+    /**
+     * Instance du service de fatigue (lazy loaded)
+     */
+    protected static ?FatigueService $fatigueService = null;
+
+    /**
+     * Obtient le service de fatigue
+     */
+    protected static function fatigueService(): FatigueService
+    {
+        if (self::$fatigueService === null) {
+            self::$fatigueService = app(FatigueService::class);
+        }
+        return self::$fatigueService;
+    }
 
     // Relations
     public function typesBus()
@@ -152,7 +170,166 @@ class Conducteur extends Model
 
     public function aAtteintLimite($periode)
     {
-        // À compléter : vérifier la limite de voyages consécutifs
-        return false;
+        // Vérifier via le service de fatigue
+        $verification = self::fatigueService()->peutEtreProgramme($this, $periode);
+        return !$verification['peut_etre_programme'];
+    }
+
+    // =====================================
+    // MÉTHODES DE FATIGUE INTELLIGENTE
+    // =====================================
+
+    /**
+     * Calcule et retourne le score de fatigue actuel
+     */
+    public function getScoreFatigue(?Carbon $date = null): array
+    {
+        return self::fatigueService()->calculerScoreFatigue($this, $date);
+    }
+
+    /**
+     * Retourne le niveau de fatigue (vert, jaune, orange, rouge)
+     */
+    public function getNiveauFatigue(?Carbon $date = null): string
+    {
+        return $this->getScoreFatigue($date)['niveau'];
+    }
+
+    /**
+     * Retourne le score de fatigue numérique (0-100)
+     */
+    public function getScoreFatigueNumerique(?Carbon $date = null): int
+    {
+        return $this->getScoreFatigue($date)['score'];
+    }
+
+    /**
+     * Vérifie si le conducteur peut être programmé pour un voyage
+     */
+    public function peutEtreProgramme(string $periode = 'Jour', ?Carbon $date = null): array
+    {
+        return self::fatigueService()->peutEtreProgramme($this, $periode, $date);
+    }
+
+    /**
+     * Vérifie si le conducteur peut travailler de nuit (basé sur fatigue)
+     */
+    public function peutTravaillerNuit(?Carbon $date = null): bool
+    {
+        // Vérifier d'abord les attributs de base
+        if (!$this->specialiste_nuit && !$this->remplacant_nuit) {
+            return false;
+        }
+
+        // Vérifier ensuite la fatigue
+        $verification = $this->peutEtreProgramme('Nuit', $date);
+        return $verification['peut_etre_programme'];
+    }
+
+    /**
+     * Retourne les alertes de fatigue pour ce conducteur
+     */
+    public function getAlertesFatigue(?Carbon $date = null): array
+    {
+        return $this->getScoreFatigue($date)['alertes'];
+    }
+
+    /**
+     * Retourne la recommandation de repos
+     */
+    public function getRecommandationRepos(?Carbon $date = null): array
+    {
+        return $this->getScoreFatigue($date)['recommandation'];
+    }
+
+    /**
+     * Génère un repos automatique si nécessaire
+     */
+    public function genererReposAutomatique(bool $forcer = false): ?ReposConducteur
+    {
+        return self::fatigueService()->genererReposAutomatique($this, $forcer);
+    }
+
+    /**
+     * Nombre de voyages de nuit consécutifs
+     */
+    public function getVoyagesNuitConsecutifs(?Carbon $date = null): int
+    {
+        return $this->getScoreFatigue($date)['statistiques']['nuits_consecutives'];
+    }
+
+    /**
+     * Nombre de voyages de jour consécutifs
+     */
+    public function getVoyagesJourConsecutifs(?Carbon $date = null): int
+    {
+        return $this->getScoreFatigue($date)['statistiques']['jours_consecutifs'];
+    }
+
+    /**
+     * Nombre de jours de travail sans repos
+     */
+    public function getJoursSansRepos(?Carbon $date = null): int
+    {
+        return $this->getScoreFatigue($date)['statistiques']['jours_travail_consecutifs'];
+    }
+
+    /**
+     * Accesseur pour la couleur du badge de fatigue
+     */
+    public function getCouleurFatigueAttribute(): string
+    {
+        return self::fatigueService()->getCouleurNiveau($this->getNiveauFatigue());
+    }
+
+    /**
+     * Accesseur pour le badge HTML de fatigue
+     */
+    public function getBadgeFatigueAttribute(): string
+    {
+        $niveau = $this->getNiveauFatigue();
+        $score = $this->getScoreFatigueNumerique();
+        $couleur = $this->couleur_fatigue;
+        
+        $icone = match($niveau) {
+            'rouge' => 'fa-exclamation-triangle',
+            'orange' => 'fa-exclamation-circle',
+            'jaune' => 'fa-info-circle',
+            'vert' => 'fa-check-circle',
+            default => 'fa-circle',
+        };
+
+        return "<span class=\"badge\" style=\"background-color: {$couleur}\"><i class=\"fas {$icone}\"></i> {$score}%</span>";
+    }
+
+    /**
+     * Scope pour filtrer par niveau de fatigue
+     */
+    public function scopeAvecNiveauFatigue($query, string $niveau)
+    {
+        return $query->get()->filter(function ($conducteur) use ($niveau) {
+            return $conducteur->getNiveauFatigue() === $niveau;
+        });
+    }
+
+    /**
+     * Scope pour exclure les conducteurs fatigués
+     */
+    public function scopeNonFatigues($query)
+    {
+        return $query->get()->filter(function ($conducteur) {
+            return in_array($conducteur->getNiveauFatigue(), ['vert', 'jaune']);
+        });
+    }
+
+    /**
+     * Scope pour obtenir les conducteurs programmables pour une période
+     */
+    public function scopeProgrammablesPour($query, string $periode, $date = null)
+    {
+        return $query->get()->filter(function ($conducteur) use ($periode, $date) {
+            $verification = $conducteur->peutEtreProgramme($periode, $date);
+            return $verification['peut_etre_programme'];
+        });
     }
 }

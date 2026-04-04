@@ -8,6 +8,7 @@ use App\Http\Controllers\LigneController;
 use App\Http\Controllers\VoyageController;
 use App\Http\Controllers\VilleController;
 use App\Http\Controllers\StatistiqueController;
+use App\Http\Controllers\ReposConducteurController;
 
 // Routes d'authentification (login, register, logout, etc.)
 Auth::routes();
@@ -58,6 +59,19 @@ Route::middleware(['auth'])->group(function () {
     Route::get('statistiques/lignes', [StatistiqueController::class, 'lignes'])->name('statistiques.lignes');
     Route::get('statistiques/export/conducteurs', [StatistiqueController::class, 'exportConducteurs'])->name('statistiques.export.conducteurs');
     Route::get('statistiques/export/bus', [StatistiqueController::class, 'exportBus'])->name('statistiques.export.bus');
+
+    // ===== REPOS & FATIGUE (consultation pour tous) =====
+    Route::prefix('repos')->name('repos.')->group(function () {
+        // Dashboard fatigue (tous)
+        Route::get('dashboard', [ReposConducteurController::class, 'dashboard'])->name('dashboard');
+        Route::get('/', [ReposConducteurController::class, 'index'])->name('index');
+        Route::get('en-attente', [ReposConducteurController::class, 'enAttente'])->name('en-attente');
+        Route::get('conducteur/{conducteur}', [ReposConducteurController::class, 'detailConducteur'])->name('detail-conducteur');
+        
+        // API pour récupérer les scores de fatigue
+        Route::get('api/score/{conducteur}', [ReposConducteurController::class, 'apiScoreFatigue'])->name('api.score');
+        Route::get('api/dashboard', [ReposConducteurController::class, 'apiDashboard'])->name('api.dashboard');
+    });
 
     // ===== ROUTES D'ACTION (admin et opérateur uniquement) =====
     Route::middleware(['can.action'])->group(function () {
@@ -116,6 +130,24 @@ Route::middleware(['auth'])->group(function () {
         Route::post('voyages-generer-preview', [VoyageController::class, 'previewGeneration'])->name('voyages.generer.preview');
         Route::post('voyages-generer-periode', [VoyageController::class, 'genererSurPeriode'])->name('voyages.generer.periode');
         Route::post('voyages-generer-periode-preview', [VoyageController::class, 'previewPeriode'])->name('voyages.generer.periode.preview');
+
+        // ===== REPOS - Actions =====
+        Route::prefix('repos')->name('repos.')->group(function () {
+            Route::get('create', [ReposConducteurController::class, 'create'])->name('create');
+            Route::post('/', [ReposConducteurController::class, 'store'])->name('store');
+            Route::get('{repo}/edit', [ReposConducteurController::class, 'edit'])->name('edit');
+            Route::put('{repo}', [ReposConducteurController::class, 'update'])->name('update');
+            Route::delete('{repo}', [ReposConducteurController::class, 'destroy'])->name('destroy');
+            
+            // Validation des repos automatiques
+            Route::post('{repo}/accepter', [ReposConducteurController::class, 'accepter'])->name('accepter');
+            Route::delete('{repo}/refuser', [ReposConducteurController::class, 'refuser'])->name('refuser');
+            Route::post('valider-masse', [ReposConducteurController::class, 'validerEnMasse'])->name('valider-masse');
+            
+            // Génération automatique
+            Route::post('generer/{conducteur}', [ReposConducteurController::class, 'genererRepos'])->name('generer');
+            Route::post('generer-tous', [ReposConducteurController::class, 'genererTousRepos'])->name('generer-tous');
+        });
     });
 
     // ===== CONFIGURATION (admin uniquement) =====
