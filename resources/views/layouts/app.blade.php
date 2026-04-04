@@ -346,6 +346,151 @@
             to { transform: rotate(360deg); }
         }
         
+        /* Notification Dropdown */
+        .notification-dropdown .dropdown-toggle::after {
+            display: none;
+        }
+        
+        .notification-menu {
+            width: 380px;
+            max-width: 95vw;
+            padding: 0;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+        
+        .notification-header {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: #fff;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .notification-header .btn-link {
+            color: rgba(255,255,255,0.8);
+            padding: 5px;
+        }
+        
+        .notification-header .btn-link:hover {
+            color: #fff;
+        }
+        
+        .notification-body {
+            max-height: 350px;
+            overflow-y: auto;
+        }
+        
+        .notification-item {
+            display: flex;
+            padding: 12px 15px;
+            border-bottom: 1px solid #f1f5f9;
+            text-decoration: none;
+            color: inherit;
+            transition: background 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .notification-item:hover {
+            background: #f8fafc;
+        }
+        
+        .notification-item.unread {
+            background: #eff6ff;
+            border-left: 3px solid #3b82f6;
+        }
+        
+        .notification-item .notif-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-right: 12px;
+        }
+        
+        .notification-item .notif-icon.danger {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+        
+        .notification-item .notif-icon.warning {
+            background: #fffbeb;
+            color: #d97706;
+        }
+        
+        .notification-item .notif-icon.success {
+            background: #f0fdf4;
+            color: #16a34a;
+        }
+        
+        .notification-item .notif-icon.info {
+            background: #eff6ff;
+            color: #2563eb;
+        }
+        
+        .notification-item .notif-content {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .notification-item .notif-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #1e293b;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .notification-item .notif-message {
+            font-size: 0.8rem;
+            color: #64748b;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .notification-item .notif-time {
+            font-size: 0.7rem;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+        
+        .notification-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: #94a3b8;
+        }
+        
+        .notification-empty i {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            opacity: 0.5;
+        }
+        
+        .notification-footer {
+            padding: 10px 15px;
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        @keyframes notif-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        
+        .notification-count.pulse {
+            animation: notif-pulse 0.5s ease;
+        }
+        
         /* Responsive */
         @media (max-width: 992px) {
             .sidebar {
@@ -1496,10 +1641,32 @@
                 </div>
                 
                 <div class="topbar-right">
-                    <button class="topbar-icon-btn" title="Notifications">
-                        <i class="fas fa-bell"></i>
-                        <span class="badge bg-danger">3</span>
-                    </button>
+                    <!-- Notifications Dropdown -->
+                    <div class="dropdown notification-dropdown">
+                        <button class="topbar-icon-btn" id="notificationBell" data-bs-toggle="dropdown" aria-expanded="false" title="Notifications">
+                            <i class="fas fa-bell"></i>
+                            <span class="badge bg-danger notification-count" style="display: none;">0</span>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end notification-menu" aria-labelledby="notificationBell">
+                            <div class="notification-header">
+                                <h6 class="mb-0"><i class="fas fa-bell me-2"></i>Notifications</h6>
+                                <button type="button" class="btn btn-link btn-sm text-decoration-none mark-all-read" title="Tout marquer comme lu">
+                                    <i class="fas fa-check-double"></i>
+                                </button>
+                            </div>
+                            <div class="notification-body" id="notificationList">
+                                <div class="notification-loading text-center py-4">
+                                    <div class="loading-spinner"></div>
+                                    <div class="small text-muted mt-2">Chargement...</div>
+                                </div>
+                            </div>
+                            <div class="notification-footer">
+                                <a href="{{ route('notifications.index') }}" class="btn btn-light btn-sm w-100">
+                                    <i class="fas fa-list me-1"></i> Voir toutes les notifications
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                     
                     @guest
                         <a href="{{ route('login') }}" class="btn btn-primary btn-sm">
@@ -1645,6 +1812,183 @@
             });
         });
     </script>
+    
+    <!-- Notification System -->
+    @auth
+    <script>
+        (function() {
+            const notificationBell = document.getElementById('notificationBell');
+            const notificationList = document.getElementById('notificationList');
+            const notificationCount = document.querySelector('.notification-count');
+            const markAllReadBtn = document.querySelector('.mark-all-read');
+            let notificationsLoaded = false;
+            
+            // Charger les notifications quand le dropdown s'ouvre
+            notificationBell?.addEventListener('click', function() {
+                if (!notificationsLoaded) {
+                    loadNotifications();
+                }
+            });
+            
+            // Charger le compteur au chargement de la page
+            loadNotificationCount();
+            
+            // Rafraîchir le compteur toutes les 60 secondes
+            setInterval(loadNotificationCount, 60000);
+            
+            function loadNotificationCount() {
+                fetch('{{ route("notifications.api.liste") }}?limite=1', {
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        updateBadge(data.non_lues);
+                    }
+                })
+                .catch(err => console.error('Erreur compteur notifications:', err));
+            }
+            
+            function loadNotifications() {
+                notificationList.innerHTML = `
+                    <div class="notification-loading text-center py-4">
+                        <div class="loading-spinner"></div>
+                        <div class="small text-muted mt-2">Chargement...</div>
+                    </div>
+                `;
+                
+                fetch('{{ route("notifications.api.liste") }}?limite=10', {
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        notificationsLoaded = true;
+                        renderNotifications(data.notifications, data.non_lues);
+                    }
+                })
+                .catch(err => {
+                    notificationList.innerHTML = `
+                        <div class="notification-empty">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <div>Erreur de chargement</div>
+                        </div>
+                    `;
+                    console.error('Erreur chargement notifications:', err);
+                });
+            }
+            
+            function renderNotifications(notifications, nonLues) {
+                updateBadge(nonLues);
+                
+                if (!notifications || notifications.length === 0) {
+                    notificationList.innerHTML = `
+                        <div class="notification-empty">
+                            <i class="fas fa-bell-slash"></i>
+                            <div>Aucune notification</div>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let html = '';
+                notifications.forEach(notif => {
+                    const unreadClass = notif.lue ? '' : 'unread';
+                    const iconClass = notif.niveau === 'danger' ? 'danger' : 
+                                     notif.niveau === 'warning' ? 'warning' : 
+                                     notif.niveau === 'success' ? 'success' : 'info';
+                    
+                    html += `
+                        <div class="notification-item ${unreadClass}" data-id="${notif.id}" data-lien="${notif.lien || ''}">
+                            <div class="notif-icon ${iconClass}">
+                                <i class="${notif.icone}"></i>
+                            </div>
+                            <div class="notif-content">
+                                <div class="notif-title">${notif.titre}</div>
+                                <div class="notif-message">${notif.message}</div>
+                                <div class="notif-time"><i class="far fa-clock me-1"></i>${notif.temps_ecoule}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                notificationList.innerHTML = html;
+                
+                // Ajouter les événements de clic
+                notificationList.querySelectorAll('.notification-item').forEach(item => {
+                    item.addEventListener('click', function() {
+                        const id = this.dataset.id;
+                        const lien = this.dataset.lien;
+                        
+                        // Marquer comme lue
+                        fetch(`/notifications/${id}/lue`, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        }).then(() => {
+                            this.classList.remove('unread');
+                            const currentCount = parseInt(notificationCount.textContent) || 0;
+                            if (currentCount > 0) {
+                                updateBadge(currentCount - 1);
+                            }
+                        });
+                        
+                        // Rediriger si lien
+                        if (lien) {
+                            window.location.href = lien;
+                        }
+                    });
+                });
+            }
+            
+            function updateBadge(count) {
+                if (count > 0) {
+                    notificationCount.textContent = count > 99 ? '99+' : count;
+                    notificationCount.style.display = 'inline-block';
+                    notificationCount.classList.add('pulse');
+                    setTimeout(() => notificationCount.classList.remove('pulse'), 500);
+                } else {
+                    notificationCount.style.display = 'none';
+                }
+            }
+            
+            // Marquer toutes comme lues
+            markAllReadBtn?.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                fetch('{{ route("notifications.marquer-toutes-lues") }}', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Retirer la classe unread de tous les items
+                        notificationList.querySelectorAll('.notification-item').forEach(item => {
+                            item.classList.remove('unread');
+                        });
+                        updateBadge(0);
+                    }
+                });
+            });
+        })();
+    </script>
+    @endauth
+    
     @stack('scripts')
 </body>
 </html>

@@ -9,6 +9,7 @@ use App\Http\Controllers\VoyageController;
 use App\Http\Controllers\VilleController;
 use App\Http\Controllers\StatistiqueController;
 use App\Http\Controllers\ReposConducteurController;
+use App\Http\Controllers\NotificationController;
 
 // Routes d'authentification (login, register, logout, etc.)
 Auth::routes();
@@ -71,6 +72,22 @@ Route::middleware(['auth'])->group(function () {
         // API pour récupérer les scores de fatigue
         Route::get('api/score/{conducteur}', [ReposConducteurController::class, 'apiScoreFatigue'])->name('api.score');
         Route::get('api/dashboard', [ReposConducteurController::class, 'apiDashboard'])->name('api.dashboard');
+    });
+
+    // ===== NOTIFICATIONS =====
+    Route::prefix('notifications')->name('notifications.')->group(function () {
+        // Page complète des notifications
+        Route::get('/', [NotificationController::class, 'index'])->name('index');
+        
+        // API pour la topbar
+        Route::get('api/liste', [NotificationController::class, 'getNotifications'])->name('api.liste');
+        Route::get('api/resume', [NotificationController::class, 'resume'])->name('api.resume');
+        
+        // Actions sur notifications
+        Route::post('{notification}/lue', [NotificationController::class, 'marquerLue'])->name('marquer-lue');
+        Route::post('marquer-toutes-lues', [NotificationController::class, 'marquerToutesLues'])->name('marquer-toutes-lues');
+        Route::delete('{notification}', [NotificationController::class, 'destroy'])->name('destroy');
+        Route::get('{notification}/action', [NotificationController::class, 'action'])->name('action');
     });
 
     // ===== ROUTES D'ACTION (admin et opérateur uniquement) =====
@@ -147,6 +164,14 @@ Route::middleware(['auth'])->group(function () {
             // Génération automatique
             Route::post('generer/{conducteur}', [ReposConducteurController::class, 'genererRepos'])->name('generer');
             Route::post('generer-tous', [ReposConducteurController::class, 'genererTousRepos'])->name('generer-tous');
+        });
+
+        // ===== NOTIFICATIONS - Actions admin =====
+        Route::prefix('notifications')->name('notifications.')->group(function () {
+            // Génération manuelle des notifications de fatigue
+            Route::post('generer-fatigue', [NotificationController::class, 'genererNotificationsFatigue'])->name('generer-fatigue');
+            // Nettoyage des anciennes notifications
+            Route::post('nettoyer', [NotificationController::class, 'nettoyer'])->name('nettoyer');
         });
     });
 

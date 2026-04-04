@@ -447,7 +447,7 @@ class FatigueService
         }
 
         // Créer le repos
-        return ReposConducteur::create([
+        $repos = ReposConducteur::create([
             'conducteur_id' => $conducteur->id,
             'date_debut' => $suggere['date_debut'],
             'date_fin' => $suggere['date_fin'],
@@ -461,6 +461,11 @@ class FatigueService
             'accepte' => false, // Doit être validé par un opérateur
             'notes' => "Repos généré automatiquement - Score fatigue: {$analyse['score']}/100 - {$recommandation['message']}",
         ]);
+
+        // Créer une notification pour le repos suggéré
+        \App\Models\Notification::creerReposSuggere($repos);
+
+        return $repos;
     }
 
     /**
