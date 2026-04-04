@@ -9,10 +9,26 @@
 
     <title>{{ \App\Models\Setting::get('app_name', 'BAOBAB Express') }}</title>
     
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#3b82f6">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="{{ \App\Models\Setting::get('app_name', 'BAOBAB Express') }}">
+    <meta name="application-name" content="{{ \App\Models\Setting::get('app_name', 'BAOBAB Express') }}">
+    <meta name="msapplication-TileColor" content="#1e293b">
+    <meta name="msapplication-TileImage" content="{{ asset('images/icons/icon-144x144.png') }}">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ file_exists(public_path('images/favicon.png')) ? asset('images/favicon.png') : asset('images/logo.png') }}?v={{ time() }}">
     <link rel="shortcut icon" href="{{ file_exists(public_path('images/favicon.png')) ? asset('images/favicon.png') : asset('images/logo.png') }}?v={{ time() }}">
-    <link rel="apple-touch-icon" href="{{ file_exists(public_path('images/favicon.png')) ? asset('images/favicon.png') : asset('images/logo.png') }}?v={{ time() }}">
+    <link rel="apple-touch-icon" href="{{ file_exists(public_path('images/icons/icon-180x180.png')) ? asset('images/icons/icon-180x180.png') : (file_exists(public_path('images/favicon.png')) ? asset('images/favicon.png') : asset('images/logo.png')) }}">
+    <link rel="apple-touch-icon" sizes="152x152" href="{{ asset('images/icons/icon-152x152.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/icons/icon-180x180.png') }}">
+    <link rel="apple-touch-icon" sizes="167x167" href="{{ asset('images/icons/icon-167x167.png') }}">
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
@@ -1988,6 +2004,271 @@
         })();
     </script>
     @endauth
+    
+    <!-- PWA Service Worker & Install Prompt -->
+    <script>
+        // Enregistrement du Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(function(registration) {
+                        console.log('SW enregistré avec succès:', registration.scope);
+                        
+                        // Vérifier les mises à jour
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    // Nouvelle version disponible
+                                    showUpdateNotification();
+                                }
+                            });
+                        });
+                    })
+                    .catch(function(error) {
+                        console.log('Erreur SW:', error);
+                    });
+            });
+        }
+        
+        // Gestion de l'invite d'installation PWA
+        let deferredPrompt;
+        const installContainer = document.getElementById('pwaInstallContainer');
+        const installBtn = document.getElementById('pwaInstallBtn');
+        const installDismiss = document.getElementById('pwaInstallDismiss');
+        
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // Vérifier si l'utilisateur n'a pas déjà refusé
+            if (localStorage.getItem('pwa-install-dismissed') !== 'true') {
+                setTimeout(() => {
+                    if (installContainer) {
+                        installContainer.style.display = 'flex';
+                    }
+                }, 3000);
+            }
+        });
+        
+        if (installBtn) {
+            installBtn.addEventListener('click', async () => {
+                if (!deferredPrompt) return;
+                
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                
+                console.log('Installation PWA:', outcome);
+                deferredPrompt = null;
+                
+                if (installContainer) {
+                    installContainer.style.display = 'none';
+                }
+            });
+        }
+        
+        if (installDismiss) {
+            installDismiss.addEventListener('click', () => {
+                if (installContainer) {
+                    installContainer.style.display = 'none';
+                }
+                localStorage.setItem('pwa-install-dismissed', 'true');
+            });
+        }
+        
+        // Détection si l'app est déjà installée
+        window.addEventListener('appinstalled', () => {
+            console.log('PWA installée');
+            if (installContainer) {
+                installContainer.style.display = 'none';
+            }
+            deferredPrompt = null;
+        });
+        
+        // Notification de mise à jour disponible
+        function showUpdateNotification() {
+            const updateBanner = document.createElement('div');
+            updateBanner.className = 'pwa-update-banner';
+            updateBanner.innerHTML = `
+                <div class="update-content">
+                    <i class="fas fa-sync-alt me-2"></i>
+                    <span>Une nouvelle version est disponible</span>
+                </div>
+                <button class="btn btn-sm btn-light" onclick="window.location.reload()">
+                    Mettre à jour
+                </button>
+            `;
+            document.body.appendChild(updateBanner);
+            
+            setTimeout(() => updateBanner.classList.add('show'), 100);
+        }
+        
+        // Gestion du mode hors ligne
+        window.addEventListener('online', () => {
+            document.body.classList.remove('offline-mode');
+            const offlineBanner = document.querySelector('.offline-banner');
+            if (offlineBanner) offlineBanner.remove();
+        });
+        
+        window.addEventListener('offline', () => {
+            document.body.classList.add('offline-mode');
+            
+            if (!document.querySelector('.offline-banner')) {
+                const banner = document.createElement('div');
+                banner.className = 'offline-banner';
+                banner.innerHTML = '<i class="fas fa-wifi-slash me-2"></i> Vous êtes hors ligne';
+                document.body.prepend(banner);
+            }
+        });
+        
+        // Vérifier l'état initial
+        if (!navigator.onLine) {
+            document.body.classList.add('offline-mode');
+        }
+    </script>
+    
+    <!-- PWA Install Prompt UI -->
+    <div id="pwaInstallContainer" class="pwa-install-prompt" style="display: none;">
+        <div class="pwa-install-content">
+            <img src="{{ asset('images/logo.png') }}" alt="Logo" class="pwa-install-logo">
+            <div class="pwa-install-text">
+                <strong>Installer BAOBAB Express</strong>
+                <span>Accédez à l'application directement depuis votre écran d'accueil</span>
+            </div>
+        </div>
+        <div class="pwa-install-actions">
+            <button id="pwaInstallDismiss" class="btn btn-sm btn-outline-secondary">Plus tard</button>
+            <button id="pwaInstallBtn" class="btn btn-sm btn-primary">
+                <i class="fas fa-download me-1"></i> Installer
+            </button>
+        </div>
+    </div>
+    
+    <style>
+        /* PWA Install Prompt */
+        .pwa-install-prompt {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 15px 20px;
+            z-index: 10000;
+            max-width: 400px;
+            width: calc(100% - 40px);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            animation: slideUp 0.3s ease;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+        
+        .pwa-install-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .pwa-install-logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            object-fit: contain;
+        }
+        
+        .pwa-install-text {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .pwa-install-text strong {
+            font-size: 1rem;
+            color: #1e293b;
+        }
+        
+        .pwa-install-text span {
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+        
+        .pwa-install-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        /* PWA Update Banner */
+        .pwa-update-banner {
+            position: fixed;
+            top: -60px;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: #fff;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            z-index: 10001;
+            transition: top 0.3s ease;
+        }
+        
+        .pwa-update-banner.show {
+            top: 0;
+        }
+        
+        /* Offline Banner */
+        .offline-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #ef4444;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            font-size: 0.9rem;
+            z-index: 10002;
+        }
+        
+        .offline-mode .topbar {
+            top: 40px;
+        }
+        
+        @media (max-width: 480px) {
+            .pwa-install-prompt {
+                bottom: 10px;
+                padding: 12px 15px;
+            }
+            
+            .pwa-install-logo {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .pwa-install-text strong {
+                font-size: 0.9rem;
+            }
+            
+            .pwa-install-text span {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
     
     @stack('scripts')
 </body>
