@@ -127,6 +127,7 @@ Route::middleware(['auth'])->group(function () {
         
         Route::get('logo', [App\Http\Controllers\SettingController::class, 'logo'])->name('logo');
         Route::post('logo', [App\Http\Controllers\SettingController::class, 'uploadLogo'])->name('logo.upload');
+        Route::post('favicon', [App\Http\Controllers\SettingController::class, 'uploadFavicon'])->name('favicon.upload');
         
         // Gestion des utilisateurs
         Route::get('users', [App\Http\Controllers\UserManagementController::class, 'index'])->name('users.index');

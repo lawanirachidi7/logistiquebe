@@ -100,4 +100,22 @@ class SettingController extends Controller
         return redirect()->route('configuration.settings')
             ->with('success', 'Logo mis à jour avec succès.');
     }
+
+    /**
+     * Upload du favicon
+     */
+    public function uploadFavicon(Request $request)
+    {
+        $request->validate([
+            'favicon' => 'required|image|mimes:png,jpg,jpeg,gif,ico|max:1024',
+        ]);
+
+        if ($request->hasFile('favicon')) {
+            $file = $request->file('favicon');
+            $file->move(public_path('images'), 'favicon.png');
+        }
+
+        return redirect()->route('configuration.settings')
+            ->with('success', 'Favicon mis à jour avec succès.');
+    }
 }

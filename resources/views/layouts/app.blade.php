@@ -7,7 +7,12 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ \App\Models\Setting::get('app_name', 'BAOBAB Express') }}</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ file_exists(public_path('images/favicon.png')) ? asset('images/favicon.png') : asset('images/logo.png') }}?v={{ time() }}">
+    <link rel="shortcut icon" href="{{ file_exists(public_path('images/favicon.png')) ? asset('images/favicon.png') : asset('images/logo.png') }}?v={{ time() }}">
+    <link rel="apple-touch-icon" href="{{ file_exists(public_path('images/favicon.png')) ? asset('images/favicon.png') : asset('images/logo.png') }}?v={{ time() }}">
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">

@@ -74,6 +74,9 @@ class Setting extends Model
     public static function getDefaults(): array
     {
         return [
+            // Paramètres de l'application
+            ['key' => 'app_name', 'value' => 'BAOBAB Express', 'type' => 'string', 'group' => 'app', 'label' => 'Nom de l\'application'],
+            
             // Informations de l'entreprise
             ['key' => 'company_name', 'value' => 'BAOBAB Express', 'type' => 'string', 'group' => 'company', 'label' => 'Nom de l\'entreprise'],
             ['key' => 'company_slogan', 'value' => 'Votre partenaire de voyage', 'type' => 'string', 'group' => 'company', 'label' => 'Slogan'],

@@ -35,42 +35,70 @@
 
     <div class="row">
         <div class="col-lg-12">
-            {{-- Section Logo --}}
+            {{-- Section Logo & Favicon --}}
             <div class="card mb-4">
                 <div class="card-header bg-primary">
-                    <i class="fas fa-image me-2"></i>Logo de l'entreprise
+                    <i class="fas fa-image me-2"></i>Logo et Favicon
                 </div>
                 <div class="card-body">
-                    <div class="row align-items-center">
-                        <div class="col-md-4 text-center mb-3 mb-md-0">
-                            <div class="p-4 bg-light rounded-3" style="min-height: 120px; display: flex; align-items: center; justify-content: center;">
-                                @if(file_exists(public_path('images/logo.png')))
-                                    <img src="{{ asset('images/logo.png') }}?v={{ time() }}" alt="Logo actuel" style="max-height: 100px; max-width: 100%;">
-                                @else
-                                    <div class="text-center text-muted">
-                                        <i class="fas fa-image fa-3x mb-2"></i>
-                                        <p class="mb-0">Aucun logo</p>
-                                    </div>
-                                @endif
+                    <div class="row">
+                        {{-- Logo --}}
+                        <div class="col-md-6 mb-4 mb-md-0">
+                            <h6 class="mb-3"><i class="fas fa-building me-1"></i> Logo de l'entreprise</h6>
+                            <div class="text-center mb-3">
+                                <div class="p-4 bg-light rounded-3" style="min-height: 120px; display: flex; align-items: center; justify-content: center;">
+                                    @if(file_exists(public_path('images/logo.png')))
+                                        <img src="{{ asset('images/logo.png') }}?v={{ time() }}" alt="Logo actuel" style="max-height: 100px; max-width: 100%;">
+                                    @else
+                                        <div class="text-center text-muted">
+                                            <i class="fas fa-image fa-3x mb-2"></i>
+                                            <p class="mb-0">Aucun logo</p>
+                                        </div>
+                                    @endif
+                                </div>
                             </div>
-                            <small class="text-muted d-block mt-2">Aperçu du logo actuel</small>
-                        </div>
-                        <div class="col-md-8">
                             <form action="{{ route('configuration.logo.upload') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <div class="mb-3">
-                                    <label for="logo" class="form-label">
-                                        <i class="fas fa-cloud-upload-alt me-1"></i>Télécharger un nouveau logo
-                                    </label>
                                     <input type="file" class="form-control @error('logo') is-invalid @enderror" 
                                            id="logo" name="logo" accept="image/*">
                                     @error('logo')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
-                                    <small class="text-muted"><i class="fas fa-info-circle me-1"></i>Formats acceptés: PNG, JPG, GIF, SVG. Taille max: 2 Mo.</small>
+                                    <small class="text-muted"><i class="fas fa-info-circle me-1"></i>PNG, JPG, GIF, SVG. Max: 2 Mo.</small>
                                 </div>
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-upload me-1"></i>Télécharger le logo
+                                <button type="submit" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-upload me-1"></i>Télécharger
+                                </button>
+                            </form>
+                        </div>
+                        {{-- Favicon --}}
+                        <div class="col-md-6">
+                            <h6 class="mb-3"><i class="fas fa-globe me-1"></i> Favicon (icône navigateur)</h6>
+                            <div class="text-center mb-3">
+                                <div class="p-4 bg-light rounded-3" style="min-height: 120px; display: flex; align-items: center; justify-content: center;">
+                                    @if(file_exists(public_path('images/favicon.png')))
+                                        <img src="{{ asset('images/favicon.png') }}?v={{ time() }}" alt="Favicon actuel" style="max-height: 64px; max-width: 64px;">
+                                    @else
+                                        <div class="text-center text-muted">
+                                            <i class="fas fa-globe fa-3x mb-2"></i>
+                                            <p class="mb-0">Aucun favicon</p>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                            <form action="{{ route('configuration.favicon.upload') }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <div class="mb-3">
+                                    <input type="file" class="form-control @error('favicon') is-invalid @enderror" 
+                                           id="favicon" name="favicon" accept="image/*">
+                                    @error('favicon')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                    <small class="text-muted"><i class="fas fa-info-circle me-1"></i>PNG, JPG, ICO. Max: 1 Mo. Taille: 32x32 ou 64x64.</small>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-upload me-1"></i>Télécharger
                                 </button>
                             </form>
                         </div>
@@ -81,6 +109,27 @@
             <form action="{{ route('configuration.settings.update') }}" method="POST">
                 @csrf
                 @method('PUT')
+                
+                {{-- Paramètres de l'application --}}
+                @if(isset($settings['app']))
+                <div class="card mb-4">
+                    <div class="card-header bg-dark">
+                        <i class="fas fa-cog me-2"></i>Paramètres de l'application
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            @foreach($settings['app'] as $setting)
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ $setting->key }}" class="form-label fw-bold">{{ $setting->label }}</label>
+                                <input type="text" class="form-control form-control-lg" id="{{ $setting->key }}" 
+                                       name="{{ $setting->key }}" value="{{ $setting->value }}" placeholder="{{ $setting->label }}">
+                                <small class="text-muted">Ce nom apparaît dans l'onglet du navigateur</small>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+                @endif
                 
                 {{-- Informations de l'entreprise --}}
                 @if(isset($settings['company']))
