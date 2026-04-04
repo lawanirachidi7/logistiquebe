@@ -11,11 +11,13 @@
             </h1>
             <p class="page-subtitle">Vue d'ensemble de votre système de gestion</p>
         </div>
+        @canaction
         <div class="page-header-actions">
             <a href="{{ route('voyages.generer.form') }}" class="btn btn-success">
                 <i class="fas fa-magic"></i> Générer Programmation
             </a>
         </div>
+        @endcanaction
     </div>
 
     <!-- Statistiques Cards -->
@@ -71,6 +73,7 @@
                 </div>
                 <div class="card-body">
                     <div class="quick-actions">
+                        @canaction
                         <a href="{{ route('voyages.generer.form') }}" class="quick-action-btn success">
                             <i class="fas fa-magic"></i>
                             <span>Générer Programmation</span>
@@ -79,6 +82,7 @@
                             <i class="fas fa-calendar-plus"></i>
                             <span>Planifier un Voyage</span>
                         </a>
+                        @endcanaction
                         <a href="{{ route('conducteurs.statut') }}" class="quick-action-btn info">
                             <i class="fas fa-user-check"></i>
                             <span>Statut Conducteurs</span>

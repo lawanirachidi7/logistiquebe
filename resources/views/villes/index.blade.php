@@ -11,11 +11,13 @@
             </h1>
             <p class="page-subtitle">Gérez les villes de desserte</p>
         </div>
+        @canaction
         <div class="page-header-actions">
             <a href="{{ route('villes.create') }}" class="btn btn-primary">
                 <i class="fas fa-plus"></i> Ajouter une ville
             </a>
         </div>
+        @endcanaction
     </div>
 
     @if(session('success'))
@@ -57,6 +59,7 @@
                                     @endif
                                 </td>
                                 <td>
+                                    @canaction
                                     <div class="btn-group-actions">
                                         <a href="{{ route('villes.edit', $ville->id) }}" class="btn btn-sm btn-warning" title="Éditer">
                                             <i class="fas fa-edit"></i>
@@ -69,6 +72,7 @@
                                             </button>
                                         </form>
                                     </div>
+                                    @endcanaction
                                 </td>
                             </tr>
                         @endforeach

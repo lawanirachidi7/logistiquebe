@@ -11,6 +11,7 @@
             </h1>
             <p class="page-subtitle">Gérez vos conducteurs et leurs informations</p>
         </div>
+        @canaction
         <div class="page-header-actions">
             <a href="{{ route('conducteurs.create') }}" class="btn btn-primary">
                 <i class="fas fa-plus"></i> Ajouter
@@ -22,6 +23,7 @@
                 <i class="fas fa-trash"></i> Supprimer tout
             </button>
         </div>
+        @endcanaction
     </div>
 
     @if(session('success'))
@@ -96,6 +98,7 @@
                                     <a href="{{ route('conducteurs.show', $conducteur->id) }}" class="btn btn-sm btn-info" title="Voir">
                                         <i class="fas fa-eye"></i>
                                     </a>
+                                    @canaction
                                     <a href="{{ route('conducteurs.edit', $conducteur->id) }}" class="btn btn-sm btn-warning" title="Éditer">
                                         <i class="fas fa-edit"></i>
                                     </a>
@@ -106,6 +109,7 @@
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
+                                    @endcanaction
                                 </div>
                             </td>
                         </tr>

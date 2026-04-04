@@ -12,12 +12,14 @@
             <p class="page-subtitle">Consultez et gérez l'historique des voyages</p>
         </div>
         <div class="page-header-actions">
+            @canaction
             <form action="{{ route('voyages.editByDate') }}" method="GET" class="d-flex gap-2">
                 <input type="date" name="date" class="form-control" value="{{ date('Y-m-d') }}">
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-edit"></i> Modifier par date
                 </button>
             </form>
+            @endcanaction
             <form action="{{ route('voyages.pdf') }}" method="GET" class="d-flex gap-2">
                 <input type="date" name="date" class="form-control" value="{{ date('Y-m-d') }}">
                 <button type="submit" class="btn btn-info">
@@ -98,6 +100,7 @@
                                     <a href="{{ route('voyages.show', $voyage->id) }}" class="btn btn-sm btn-info" title="Voir">
                                         <i class="fas fa-eye"></i>
                                     </a>
+                                    @canaction
                                     <a href="{{ route('voyages.edit', $voyage->id) }}" class="btn btn-sm btn-warning" title="Modifier">
                                         <i class="fas fa-edit"></i>
                                     </a>
@@ -116,6 +119,7 @@
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
+                                    @endcanaction
                                 </div>
                             </td>
                         </tr>

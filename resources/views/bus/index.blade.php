@@ -11,11 +11,13 @@
             </h1>
             <p class="page-subtitle">Gérez votre flotte de véhicules</p>
         </div>
+        @canaction
         <div class="page-header-actions">
             <a href="{{ route('bus.create') }}" class="btn btn-primary">
                 <i class="fas fa-plus"></i> Ajouter un bus
             </a>
         </div>
+        @endcanaction
     </div>
 
     @if(session('success'))
@@ -73,6 +75,7 @@
                                     @endif
                                 </td>
                                 <td>
+                                    @canaction
                                     <div class="btn-group-actions">
                                         <a href="{{ route('bus.edit', $bus->id) }}" class="btn btn-sm btn-warning" title="Éditer">
                                             <i class="fas fa-edit"></i>
@@ -85,6 +88,7 @@
                                             </button>
                                         </form>
                                     </div>
+                                    @endcanaction
                                 </td>
                             </tr>
                         @endforeach

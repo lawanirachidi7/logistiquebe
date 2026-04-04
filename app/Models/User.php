@@ -98,11 +98,30 @@ class User extends Authenticatable
     }
 
     /**
-     * Vérifie si l'utilisateur peut accéder aux paramètres
+     * Vérifie si l'utilisateur peut accéder aux paramètres (configuration)
+     * Seul l'admin a accès à la configuration
      */
     public function canAccessSettings(): bool
     {
-        return in_array($this->role, [self::ROLE_ADMIN, self::ROLE_MANAGER]);
+        return $this->isAdmin();
+    }
+
+    /**
+     * Vérifie si l'utilisateur peut effectuer des actions (CRUD)
+     * Admin et Opérateur peuvent effectuer des actions
+     * Manager = consultation uniquement
+     */
+    public function canPerformActions(): bool
+    {
+        return in_array($this->role, [self::ROLE_ADMIN, self::ROLE_OPERATEUR]);
+    }
+
+    /**
+     * Vérifie si l'utilisateur est en mode consultation uniquement
+     */
+    public function isReadOnly(): bool
+    {
+        return $this->isManager();
     }
 
     /**

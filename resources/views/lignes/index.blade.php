@@ -11,11 +11,13 @@
             </h1>
             <p class="page-subtitle">Gérez vos itinéraires et trajets</p>
         </div>
+        @canaction
         <div class="page-header-actions">
             <a href="{{ route('lignes.create') }}" class="btn btn-primary">
                 <i class="fas fa-plus"></i> Ajouter une ligne
             </a>
         </div>
+        @endcanaction
     </div>
 
     @if(session('success'))
@@ -104,6 +106,7 @@
                                     @endif
                                 </td>
                                 <td>
+                                    @canaction
                                     <div class="btn-group-actions">
                                         <a href="{{ route('lignes.edit', $ligne->id) }}" class="btn btn-sm btn-warning" title="Éditer">
                                             <i class="fas fa-edit"></i>
@@ -116,6 +119,7 @@
                                             </button>
                                         </form>
                                     </div>
+                                    @endcanaction
                                 </td>
                             </tr>
                         @endforeach
