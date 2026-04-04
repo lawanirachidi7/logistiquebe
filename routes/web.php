@@ -129,6 +129,14 @@ Route::middleware(['auth'])->group(function () {
         Route::post('logo', [App\Http\Controllers\SettingController::class, 'uploadLogo'])->name('logo.upload');
         Route::post('favicon', [App\Http\Controllers\SettingController::class, 'uploadFavicon'])->name('favicon.upload');
         
+        // Critères de programmation
+        Route::get('criteres', [App\Http\Controllers\CritereProgrammationController::class, 'index'])->name('criteres.index');
+        Route::put('criteres', [App\Http\Controllers\CritereProgrammationController::class, 'update'])->name('criteres.update');
+        Route::post('criteres/reset', [App\Http\Controllers\CritereProgrammationController::class, 'reset'])->name('criteres.reset');
+        Route::patch('criteres/{critere}/toggle', [App\Http\Controllers\CritereProgrammationController::class, 'toggleActive'])->name('criteres.toggle');
+        Route::get('criteres/export', [App\Http\Controllers\CritereProgrammationController::class, 'export'])->name('criteres.export');
+        Route::post('criteres/import', [App\Http\Controllers\CritereProgrammationController::class, 'import'])->name('criteres.import');
+        
         // Gestion des utilisateurs
         Route::get('users', [App\Http\Controllers\UserManagementController::class, 'index'])->name('users.index');
         Route::get('users/create', [App\Http\Controllers\UserManagementController::class, 'create'])->name('users.create');

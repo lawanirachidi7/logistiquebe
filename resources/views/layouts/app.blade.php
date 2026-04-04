@@ -1426,6 +1426,12 @@
                             <span>Paramètres & Logo</span>
                         </a>
                     </li>
+                    <li class="sidebar-nav-item">
+                        <a href="{{ route('configuration.criteres.index') }}" class="sidebar-nav-link {{ request()->routeIs('configuration.criteres.*') ? 'active' : '' }}">
+                            <i class="fas fa-sliders-h"></i>
+                            <span>Critères Programmation</span>
+                        </a>
+                    </li>
                     @if(auth()->user()->canManageUsers())
                     <li class="sidebar-nav-item">
                         <a href="{{ route('configuration.users.index') }}" class="sidebar-nav-link {{ request()->routeIs('configuration.users.*') ? 'active' : '' }}">
