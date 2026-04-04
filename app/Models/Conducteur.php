@@ -49,6 +49,11 @@ class Conducteur extends Model
         return $this->hasMany(Indisponibilite::class);
     }
 
+    public function conges()
+    {
+        return $this->hasMany(Conge::class);
+    }
+
     // Scopes
     public function scopeDisponible($query, $date = null)
     {
@@ -63,6 +68,12 @@ class Conducteur extends Model
             // Exclure les conducteurs indisponibles
             ->whereDoesntHave('indisponibilites', function($q) use ($date) {
                 $q->where('date_debut', '<=', $date)
+                  ->where('date_fin', '>=', $date);
+            })
+            // Exclure les conducteurs en congé
+            ->whereDoesntHave('conges', function($q) use ($date) {
+                $q->where('valide', true)
+                  ->where('date_debut', '<=', $date)
                   ->where('date_fin', '>=', $date);
             });
     }
@@ -98,7 +109,7 @@ class Conducteur extends Model
     public function estDisponible($date = null)
     {
         $date = $date ?? now()->toDateString();
-        return $this->actif && !$this->estEnRepos($date) && !$this->estIndisponible($date);
+        return $this->actif && !$this->estEnRepos($date) && !$this->estIndisponible($date) && !$this->estEnConge($date);
     }
 
     /**
@@ -128,13 +139,52 @@ class Conducteur extends Model
     }
 
     /**
+     * Vérifie si le conducteur est en congé à une date donnée
+     */
+    public function estEnConge($date = null)
+    {
+        $date = $date ?? now()->toDateString();
+        
+        return $this->conges()
+            ->where('valide', true)
+            ->where('date_debut', '<=', $date)
+            ->where('date_fin', '>=', $date)
+            ->exists();
+    }
+
+    /**
+     * Retourne le congé actif si le conducteur est en congé
+     */
+    public function getCongeActif($date = null)
+    {
+        $date = $date ?? now()->toDateString();
+        
+        return $this->conges()
+            ->where('valide', true)
+            ->where('date_debut', '<=', $date)
+            ->where('date_fin', '>=', $date)
+            ->first();
+    }
+
+    /**
      * Retourne le motif du repos ou de l'indisponibilité à une date donnée
      */
     public function getMotifIndisponibilite($date = null)
     {
         $date = $date ?? now()->toDateString();
         
-        // Vérifier d'abord les repos
+        // Vérifier d'abord les congés
+        $conge = $this->conges()
+            ->where('valide', true)
+            ->where('date_debut', '<=', $date)
+            ->where('date_fin', '>=', $date)
+            ->first();
+        
+        if ($conge) {
+            return "Congé ({$conge->type_label}): {$conge->motif}";
+        }
+        
+        // Vérifier les repos
         $repos = $this->repos()
             ->where('date_debut', '<=', $date)
             ->where('date_fin', '>=', $date)

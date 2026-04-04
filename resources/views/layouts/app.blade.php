@@ -1611,6 +1611,18 @@
                             @endif
                         </a>
                     </li>
+                    <li class="sidebar-nav-item">
+                        <a href="{{ route('conges.index') }}" class="sidebar-nav-link {{ request()->routeIs('conges.*') ? 'active' : '' }}">
+                            <i class="fas fa-umbrella-beach"></i>
+                            <span>Gestion des Congés</span>
+                            @php
+                                $conducteursEnConge = \App\Models\Conge::actifsA(\Carbon\Carbon::today())->select('conducteur_id')->distinct()->count();
+                            @endphp
+                            @if($conducteursEnConge > 0)
+                                <span class="badge bg-info">{{ $conducteursEnConge }}</span>
+                            @endif
+                        </a>
+                    </li>
                 </ul>
                 
                 @auth

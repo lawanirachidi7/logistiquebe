@@ -10,6 +10,7 @@ use App\Http\Controllers\VilleController;
 use App\Http\Controllers\StatistiqueController;
 use App\Http\Controllers\ReposConducteurController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\CongeController;
 
 // Routes d'authentification (login, register, logout, etc.)
 Auth::routes();
@@ -72,6 +73,14 @@ Route::middleware(['auth'])->group(function () {
         // API pour récupérer les scores de fatigue
         Route::get('api/score/{conducteur}', [ReposConducteurController::class, 'apiScoreFatigue'])->name('api.score');
         Route::get('api/dashboard', [ReposConducteurController::class, 'apiDashboard'])->name('api.dashboard');
+    });
+
+    // ===== CONGÉS (consultation pour tous) =====
+    Route::prefix('conges')->name('conges.')->group(function () {
+        Route::get('/', [CongeController::class, 'index'])->name('index');
+        Route::get('calendrier', [CongeController::class, 'calendrier'])->name('calendrier');
+        Route::get('api/conducteur/{conducteur}', [CongeController::class, 'apiConducteur'])->name('api.conducteur');
+        Route::post('api/verifier-disponibilite', [CongeController::class, 'apiVerifierDisponibilite'])->name('api.verifier-disponibilite');
     });
 
     // ===== NOTIFICATIONS =====
@@ -164,6 +173,16 @@ Route::middleware(['auth'])->group(function () {
             // Génération automatique
             Route::post('generer/{conducteur}', [ReposConducteurController::class, 'genererRepos'])->name('generer');
             Route::post('generer-tous', [ReposConducteurController::class, 'genererTousRepos'])->name('generer-tous');
+        });
+
+        // ===== CONGÉS - Actions =====
+        Route::prefix('conges')->name('conges.')->group(function () {
+            Route::get('create', [CongeController::class, 'create'])->name('create');
+            Route::post('/', [CongeController::class, 'store'])->name('store');
+            Route::get('{conge}', [CongeController::class, 'show'])->name('show');
+            Route::get('{conge}/edit', [CongeController::class, 'edit'])->name('edit');
+            Route::put('{conge}', [CongeController::class, 'update'])->name('update');
+            Route::delete('{conge}', [CongeController::class, 'destroy'])->name('destroy');
         });
 
         // ===== NOTIFICATIONS - Actions admin =====
