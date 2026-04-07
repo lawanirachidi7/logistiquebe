@@ -26,20 +26,25 @@ Route::middleware(['auth'])->group(function () {
     
     // Conducteurs - Consultation
     Route::get('conducteurs', [ConducteurController::class, 'index'])->name('conducteurs.index');
+    Route::get('conducteurs/create', [ConducteurController::class, 'create'])->name('conducteurs.create');
     Route::get('conducteurs/{conducteur}', [ConducteurController::class, 'show'])->name('conducteurs.show');
     Route::get('conducteurs-statut', [ConducteurController::class, 'statut'])->name('conducteurs.statut');
 
     // Bus - Consultation
     Route::get('bus', [BusController::class, 'index'])->name('bus.index');
+    Route::get('bus/create', [BusController::class, 'create'])->name('bus.create');
     Route::get('bus/{bus}', [BusController::class, 'show'])->name('bus.show');
     Route::get('bus-disponibilite', [BusController::class, 'disponibilite'])->name('bus.disponibilite');
 
     // Lignes - Consultation
     Route::get('lignes', [LigneController::class, 'index'])->name('lignes.index');
+    Route::get('lignes/create', [LigneController::class, 'create'])->name('lignes.create');
     Route::get('lignes/{ligne}', [LigneController::class, 'show'])->name('lignes.show');
 
     // Villes - Consultation
     Route::get('villes', [VilleController::class, 'index'])->name('villes.index');
+    Route::get('villes/create', [VilleController::class, 'create'])->name('villes.create');
+    Route::get('villes/{ville}', [VilleController::class, 'show'])->name('villes.show');
 
     // Voyages - Consultation
     Route::get('voyages', [VoyageController::class, 'index'])->name('voyages.index');

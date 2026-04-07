@@ -32,7 +32,6 @@ class ConfigurationSeeder extends Seeder
             ]);
             $this->command->info("Utilisateur admin créé: admin@logistiquebe.com / password123");
         }
-
         // Initialiser les paramètres par défaut
         Setting::initDefaults();
         $this->command->info("Paramètres par défaut initialisés.");
