@@ -13,17 +13,17 @@
         
         body {
             font-family: DejaVu Sans, sans-serif;
-            font-size: 11px;
-            line-height: 1.3;
-            padding: 15px;
+            font-size: 10px;
+            line-height: 1.1;
+            padding: 5px 10px 5px 10px;
         }
         
         .header {
             display: table;
             width: 100%;
-            margin-bottom: 15px;
+            margin-bottom: 8px;
             border-bottom: 2px solid #333;
-            padding-bottom: 10px;
+            padding-bottom: 5px;
         }
         
         .header-left {
@@ -95,8 +95,8 @@
         }
         
         .section {
-            margin-top: 15px;
-            margin-bottom: 20px;
+            margin-top: 8px;
+            margin-bottom: 10px;
         }
         
         .section-title {
@@ -112,12 +112,12 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 15px;
+            margin-bottom: 6px;
         }
         
         th, td {
             border: 1px solid #333;
-            padding: 6px 8px;
+            padding: 3px 4px;
             text-align: left;
             vertical-align: middle;
         }
@@ -125,12 +125,12 @@
         th {
             background-color: #f5f5f5;
             font-weight: bold;
-            font-size: 10px;
+            font-size: 9px;
             text-transform: uppercase;
         }
         
         td {
-            font-size: 11px;
+            font-size: 10px;
         }
         
         .col-numero {
@@ -164,8 +164,8 @@
         }
         
         .footer {
-            margin-top: 30px;
-            padding-top: 20px;
+            margin-top: 10px;
+            padding-top: 10px;
         }
         
         .signature-area {
@@ -348,6 +348,14 @@
         <div class="signature-area">
             <div class="signature-title">Le Responsable</div>
             <div class="signature-line"></div>
+        </div>
+        <div style="margin-top: 60px; font-size:9px;" class="invoice-footer">
+            <hr style="margin: 0px; border-top: 1px solid #000">
+            <p class="mb-0" style="text-align: center;">
+                Société Anonyme au capital de 10.000.000 F CFA <br>
+                Comptes bancaires_ Banque Atlantique N° : 034969080001_ BOA N° : 02589710019 <br>
+                <b>RCCM N° RB/Parakou/13-B-21 N° IFU 3201301345515</b>
+            </p>
         </div>
     </div>
 </body>

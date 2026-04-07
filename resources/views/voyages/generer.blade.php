@@ -584,6 +584,16 @@
                                     <small class="text-muted">Jour & Nuit</small>
                                 </div>
                             </label>
+                            </div>
+
+                            <!-- Forcer la nuit (exception opérateur) -->
+                            <div class="form-check mt-3" id="forceNuitContainer" style="display: none;">
+                                <input class="form-check-input" type="checkbox" id="force_nuit" name="force_nuit" value="1">
+                                <label class="form-check-label" for="force_nuit">
+                                    Forcer la nuit (exception opérateur)
+                                </label>
+                                <small class="text-muted d-block">À cocher uniquement si l'opérateur autorise un conducteur de jour à travailler la nuit exceptionnellement.</small>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -845,6 +855,15 @@ $(document).ready(function() {
         $('.periode-btn').removeClass('selected');
         $(this).addClass('selected');
         updateSummary();
+
+        // Afficher la case à cocher "forcer la nuit" uniquement si "Nuit" est sélectionné
+        var periode = $(this).find('input').val();
+        if (periode === 'Nuit') {
+            $('#forceNuitContainer').show();
+        } else {
+            $('#forceNuitContainer').hide();
+            $('#force_nuit').prop('checked', false);
+        }
     });
     
     // Ligne cards

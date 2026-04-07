@@ -44,8 +44,14 @@ class Voyage extends Model
             if ($voyage->conducteur && method_exists($voyage->conducteur, 'aAtteintLimite') && $voyage->conducteur->aAtteintLimite($voyage->periode)) {
                 throw new \Exception("Limite de voyages atteinte");
             }
-            // Vérifier compatibilité nuit
-            if ($voyage->periode === 'Nuit' && $voyage->conducteur && method_exists($voyage->conducteur, 'peutTravaillerNuit') && !$voyage->conducteur->peutTravaillerNuit()) {
+            // Vérifier compatibilité nuit (exception opérateur possible)
+            if (
+                $voyage->periode === 'Nuit'
+                && $voyage->conducteur
+                && method_exists($voyage->conducteur, 'peutTravaillerNuit')
+                && !$voyage->conducteur->peutTravaillerNuit()
+                && empty($voyage->force_nuit)
+            ) {
                 throw new \Exception("Conducteur non autorisé la nuit");
             }
         });

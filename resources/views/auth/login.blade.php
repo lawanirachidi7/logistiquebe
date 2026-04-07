@@ -52,11 +52,16 @@
                         <i class="fas fa-lock"></i>
                         Mot de passe
                     </label>
-                    <input id="password" type="password" 
-                           class="form-control @error('password') is-invalid @enderror" 
-                           name="password" 
-                           placeholder="••••••••"
-                           required autocomplete="current-password">
+                        <div class="input-group">
+                            <input id="password" type="password" 
+                                   class="form-control @error('password') is-invalid @enderror" 
+                                   name="password" 
+                                   placeholder="••••••••"
+                                   required autocomplete="current-password">
+                            <span class="input-group-text" id="togglePassword" style="cursor:pointer;">
+                                <i class="fas fa-eye" id="eyeIcon"></i>
+                            </span>
+                        </div>
                 </div>
 
                 <div class="form-options">
@@ -86,3 +91,21 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const passwordInput = document.getElementById('password');
+        const togglePassword = document.getElementById('togglePassword');
+        const eyeIcon = document.getElementById('eyeIcon');
+        if (togglePassword) {
+            togglePassword.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                eyeIcon.classList.toggle('fa-eye');
+                eyeIcon.classList.toggle('fa-eye-slash');
+            });
+        }
+    });
+</script>
+@endpush

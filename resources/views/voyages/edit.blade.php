@@ -13,6 +13,17 @@
                         @method('PUT')
 
                         <div class="mb-3">
+                                                    @if(old('periode', $voyage->periode) === 'Nuit')
+                                                    <div class="mb-3">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="force_nuit" name="force_nuit" value="1" {{ old('force_nuit', $voyage->force_nuit) ? 'checked' : '' }}>
+                                                            <label class="form-check-label" for="force_nuit">
+                                                                Forcer la nuit (exception opérateur)
+                                                            </label>
+                                                        </div>
+                                                        <small class="text-muted">À cocher uniquement si l'opérateur autorise un conducteur de jour à travailler la nuit exceptionnellement.</small>
+                                                    </div>
+                                                    @endif
                             <label for="date_depart" class="form-label">Date de départ</label>
                             <input type="datetime-local" class="form-control @error('date_depart') is-invalid @enderror" id="date_depart" name="date_depart" value="{{ old('date_depart', $voyage->date_depart) }}" required>
                             @error('date_depart')
