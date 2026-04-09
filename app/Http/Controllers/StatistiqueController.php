@@ -107,30 +107,28 @@ class StatistiqueController extends Controller
         $dateDebut = $request->get('date_debut', Carbon::now()->subMonth()->startOfMonth()->format('Y-m-d'));
         $dateFin = $request->get('date_fin', Carbon::now()->format('Y-m-d'));
 
-        $conducteurs = Conducteur::select('conducteurs.*')
-            ->selectRaw('COUNT(v1.id) as nb_voyages_principal')
-            ->selectRaw('COUNT(v2.id) as nb_voyages_second')
-            ->selectRaw('COUNT(v1.id) + COUNT(v2.id) as nb_voyages_total')
-            ->selectRaw("SUM(CASE WHEN v1.statut = 'Terminé' THEN l1.distance_km ELSE 0 END) + SUM(CASE WHEN v2.statut = 'Terminé' THEN l2.distance_km ELSE 0 END) as distance_totale")
-            ->selectRaw("SUM(CASE WHEN v1.periode = 'Jour' THEN 1 ELSE 0 END) + SUM(CASE WHEN v2.periode = 'Jour' THEN 1 ELSE 0 END) as voyages_jour")
-            ->selectRaw("SUM(CASE WHEN v1.periode = 'Nuit' THEN 1 ELSE 0 END) + SUM(CASE WHEN v2.periode = 'Nuit' THEN 1 ELSE 0 END) as voyages_nuit")
-            ->selectRaw("SUM(CASE WHEN v1.sens = 'Aller' THEN 1 ELSE 0 END) + SUM(CASE WHEN v2.sens = 'Aller' THEN 1 ELSE 0 END) as voyages_aller")
-            ->selectRaw("SUM(CASE WHEN v1.sens = 'Retour' THEN 1 ELSE 0 END) + SUM(CASE WHEN v2.sens = 'Retour' THEN 1 ELSE 0 END) as voyages_retour")
-            ->leftJoin('voyages as v1', function($join) use ($dateDebut, $dateFin) {
-                $join->on('conducteurs.id', '=', 'v1.conducteur_id')
-                    ->whereRaw("DATE(v1.date_depart) >= ?", [$dateDebut])
-                    ->whereRaw("DATE(v1.date_depart) <= ?", [$dateFin]);
-            })
-            ->leftJoin('lignes as l1', 'v1.ligne_id', '=', 'l1.id')
-            ->leftJoin('voyages as v2', function($join) use ($dateDebut, $dateFin) {
-                $join->on('conducteurs.id', '=', 'v2.conducteur_2_id')
-                    ->whereRaw("DATE(v2.date_depart) >= ?", [$dateDebut])
-                    ->whereRaw("DATE(v2.date_depart) <= ?", [$dateFin]);
-            })
-            ->leftJoin('lignes as l2', 'v2.ligne_id', '=', 'l2.id')
-            ->groupBy('conducteurs.id')
-            ->orderByDesc('nb_voyages_total')
-            ->get();
+
+        $conducteurs = Conducteur::with(['voyages' => function($q) use ($dateDebut, $dateFin) {
+            $q->whereBetween(DB::raw('DATE(date_depart)'), [$dateDebut, $dateFin]);
+        }, 'voyagesSecond' => function($q) use ($dateDebut, $dateFin) {
+            $q->whereBetween(DB::raw('DATE(date_depart)'), [$dateDebut, $dateFin]);
+        }, 'voyages.ligne', 'voyagesSecond.ligne'])
+        ->get()
+        ->map(function($conducteur) {
+            // Récupérer tous les voyages où il est principal ou second, sans doublons
+            $voyages = $conducteur->voyages->merge($conducteur->voyagesSecond)->unique('id');
+            $conducteur->nb_voyages_principal = $conducteur->voyages->count();
+            $conducteur->nb_voyages_second = $conducteur->voyagesSecond->count();
+            $conducteur->nb_voyages_total = $voyages->count();
+            $conducteur->distance_totale = $voyages->where('statut', 'Terminé')->sum(function($v) {
+                return $v->ligne->distance_km ?? 0;
+            });
+            $conducteur->voyages_jour = $voyages->where('periode', 'Jour')->count();
+            $conducteur->voyages_nuit = $voyages->where('periode', 'Nuit')->count();
+            $conducteur->voyages_aller = $voyages->where('sens', 'Aller')->count();
+            $conducteur->voyages_retour = $voyages->where('sens', 'Retour')->count();
+            return $conducteur;
+        });
 
         // Statistiques globales des conducteurs
         $statsGlobales = [

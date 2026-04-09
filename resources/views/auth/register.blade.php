@@ -13,7 +13,7 @@
                     </div>
                 @endif
             </div>
-            <h1>{{ config('app.name', 'Logistique BE') }}</h1>
+            <h1>{{ config('app.name', 'Logistique') }}</h1>
             <p>Créer un nouveau compte</p>
         </div>
 

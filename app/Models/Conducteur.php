@@ -12,6 +12,13 @@ class Conducteur extends Model
         'nom', 'prenom', 'ville_actuelle', 'famille_hors_parakou', 'specialiste_nuit', 'remplacant_nuit', 'actif'
     ];
 
+        /**
+         * Voyages où le conducteur est en second
+         */
+        public function voyagesSecond()
+        {
+            return $this->hasMany(Voyage::class, 'conducteur_2_id');
+        }
     /**
      * Instance du service de fatigue (lazy loaded)
      */

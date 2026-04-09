@@ -66,7 +66,10 @@ class VoyageController extends Controller
             'sens' => 'required|in:Aller,Retour',
         ]);
 
-        Voyage::create($request->all());
+        $data = $request->all();
+        // Si la case "forcer la nuit" est cochée, forcer la valeur à 1 (sinon 0)
+        $data['force_nuit'] = $request->has('force_nuit') ? 1 : 0;
+        Voyage::create($data);
 
         return redirect()->route('voyages.historique')->with('success', 'Voyage planifié avec succès');
     }

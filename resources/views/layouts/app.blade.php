@@ -1485,7 +1485,7 @@
             <div class="sidebar-header">
                 <a href="{{ url('/') }}" class="sidebar-brand">
                     <img src="{{ asset('images/logo.png') }}" alt="Logo" style="height: 40px; margin-right: 8px;">
-                    <span>Logistique BE</span>
+                    <span>Logistique</span>
                 </a>
             </div>
             

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Voyage extends Model
 {
     protected $fillable = [
-        'conducteur_id', 'conducteur_2_id', 'bus_id', 'ligne_id', 'date_depart', 'date_retour_prevue', 'date_retour_reelle', 'periode', 'sens', 'statut', 'voyage_aller_id', 'notes'
+        'conducteur_id', 'conducteur_2_id', 'bus_id', 'ligne_id', 'date_depart', 'date_retour_prevue', 'date_retour_reelle', 'periode', 'sens', 'statut', 'voyage_aller_id', 'notes', 'force_nuit'
     ];
 
     protected static function booted()
@@ -42,7 +42,8 @@ class Voyage extends Model
             
             // Vérifier limite de voyages
             if ($voyage->conducteur && method_exists($voyage->conducteur, 'aAtteintLimite') && $voyage->conducteur->aAtteintLimite($voyage->periode)) {
-                throw new \Exception("Limite de voyages atteinte");
+                // Notification session (affichée après redirection)
+                session()->flash('warning', 'Limite de voyages atteinte pour le conducteur, mais la programmation est autorisée.');
             }
             // Vérifier compatibilité nuit (exception opérateur possible)
             if (
