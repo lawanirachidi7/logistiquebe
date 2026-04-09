@@ -53,7 +53,7 @@ class Voyage extends Model
                 && !$voyage->conducteur->peutTravaillerNuit()
                 && empty($voyage->force_nuit)
             ) {
-                throw new \Exception("Conducteur non autorisé la nuit");
+                session()->flash('warning', 'Conducteur non autorisé la nuit, mais la programmation est autorisée.');
             }
         });
 
