@@ -26,7 +26,7 @@
             <div class="stat-card primary">
                 <i class="fas fa-id-card stat-icon"></i>
                 <div class="stat-label">Conducteurs</div>
-                <div class="stat-value">{{ $totalConducteurs }}</div>
+                <div class="stat-value">{{ $conducteursActifs }}/{{ $totalConducteurs }}</div>
                 <a href="{{ route('conducteurs.index') }}" class="stat-link">
                     Gérer <i class="fas fa-arrow-right"></i>
                 </a>
@@ -36,7 +36,7 @@
             <div class="stat-card success">
                 <i class="fas fa-bus stat-icon"></i>
                 <div class="stat-label">Bus Disponibles</div>
-                <div class="stat-value">{{ $totalBus }}</div>
+                <div class="stat-value">{{ $busDisponibles }}/{{ $totalBus }}</div>
                 <a href="{{ route('bus.index') }}" class="stat-link">
                     Gérer <i class="fas fa-arrow-right"></i>
                 </a>

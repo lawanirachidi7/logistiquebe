@@ -28,7 +28,8 @@ class StatistiqueController extends Controller
             'voyages_planifies' => Voyage::whereBetween(DB::raw('DATE(date_depart)'), [$dateDebut, $dateFin])
                 ->where('statut', 'Planifié')->count(),
             'total_conducteurs' => Conducteur::where('actif', true)->count(),
-            'total_bus' => Bus::where('disponible', true)->count(),
+            'bus_disponibles' => Bus::where('disponible', true)->count(),
+            'bus_total' => Bus::count(),
             'total_lignes' => Ligne::count(),
         ];
 

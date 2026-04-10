@@ -15,7 +15,9 @@ class VoyageController extends Controller
      */
     public function dashboard()
     {
+        $conducteursActifs = Conducteur::where('actif', true)->count();
         $totalConducteurs = Conducteur::count();
+        $busDisponibles = Bus::where('disponible', true)->count();
         $totalBus = Bus::count();
         $totalLignes = Ligne::count();
         $voyagesProgrammes = Voyage::where('date_depart', '>=', now())->count();
@@ -25,7 +27,7 @@ class VoyageController extends Controller
             ->limit(5)
             ->get();
 
-        return view('voyages.dashboard', compact('totalConducteurs', 'totalBus', 'totalLignes', 'voyagesProgrammes', 'derniersVoyages'));
+        return view('voyages.dashboard', compact('conducteursActifs', 'totalConducteurs', 'busDisponibles', 'totalBus', 'totalLignes', 'voyagesProgrammes', 'derniersVoyages'));
     }
 
     /**

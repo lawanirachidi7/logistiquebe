@@ -85,8 +85,8 @@
                 <div class="col-md-2">
                     <div class="card bg-dark text-white">
                         <div class="card-body text-center">
-                            <h3 class="mb-0">{{ $stats['total_bus'] }}</h3>
-                            <small>Bus Disponibles</small>
+                            <h3 class="mb-0">{{ $stats['bus_disponibles'] }}/{{ $stats['bus_total'] }}</h3>
+                            <small>Bus Disponibles / Total</small>
                         </div>
                     </div>
                 </div>
