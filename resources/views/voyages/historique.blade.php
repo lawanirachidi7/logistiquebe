@@ -19,6 +19,10 @@
                     <i class="fas fa-edit"></i> Modifier par date
                 </button>
             </form>
+                <!-- Bouton pour valider tous les voyages d'une date -->
+                <button type="button" class="btn btn-success ms-2" data-bs-toggle="modal" data-bs-target="#validateDateModal">
+                    <i class="fas fa-check-double"></i> Valider tous les voyages du jour
+                </button>
             @endcanaction
             <form action="{{ route('voyages.pdf') }}" method="GET" class="d-flex gap-2">
                 <input type="date" name="date" class="form-control" value="{{ date('Y-m-d') }}">
@@ -127,6 +131,38 @@
                     </tbody>
                 </table>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de validation par date -->
+<div class="modal fade" id="validateDateModal" tabindex="-1" aria-labelledby="validateDateModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="validateDateModalLabel">
+                    <i class="fas fa-check-double"></i> Valider tous les voyages d'une date
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ route('voyages.validateByDate') }}" method="POST">
+                @csrf
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> Cette action marquera tous les voyages <strong>Planifiés</strong> de la date sélectionnée comme <strong>Terminés</strong> et mettra à jour les positions des conducteurs et des bus.
+                    </div>
+                    <div class="mb-3">
+                        <label for="validate_date" class="form-label fw-bold">Date</label>
+                        <input type="date" class="form-control" id="validate_date" name="date" value="{{ date('Y-m-d') }}" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-check"></i> Valider les voyages
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
