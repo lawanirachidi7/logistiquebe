@@ -23,7 +23,12 @@ class ConducteurController extends Controller
     public function index()
     {
         $conducteurs = Conducteur::all();
-        return view('conducteurs.index', compact('conducteurs'));
+        $fatigueService = app(\App\Services\FatigueService::class);
+        $analyseFatigue = [];
+        foreach ($conducteurs as $conducteur) {
+            $analyseFatigue[$conducteur->id] = $fatigueService->calculerScoreFatigue($conducteur);
+        }
+        return view('conducteurs.index', compact('conducteurs', 'analyseFatigue'));
     }
 
     /**

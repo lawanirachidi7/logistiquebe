@@ -53,9 +53,11 @@
                             <th>Nom</th>
                             <th>Prénom</th>
                             <th>Spécialiste nuit</th>
-                            <th>Remplaçant nuit</th>
-                            <th>Famille hors Parakou</th>
+                            {{-- <th>Remplaçant nuit</th>--}}
+                            {{-- <th>Famille hors Parakou</th> --}}
                             <th>Actif</th>
+                            <th>Voy.con.sans repos</th>
+                            <th>Proposition</th>
                             <th class="no-sort no-export">Actions</th>
                         </tr>
                     </thead>
@@ -72,7 +74,7 @@
                                     <span class="badge badge-non">Non</span> 
                                 @endif
                             </td>
-                            <td>
+                            {{-- <td>
                                 @if($conducteur->remplacant_nuit) 
                                     <span class="badge badge-oui">Oui</span> 
                                 @else 
@@ -86,11 +88,28 @@
                                     <span class="badge badge-non">Non</span> 
                                 @endif
                             </td>
+                            --}}
                             <td>
                                 @if($conducteur->actif) 
                                     <span class="badge badge-status-actif">Actif</span> 
                                 @else 
                                     <span class="badge badge-status-inactif">Inactif</span> 
+                                @endif
+                            </td>
+                            <td>
+                                {{ $analyseFatigue[$conducteur->id]['statistiques']['jours_travail_consecutifs'] ?? '-' }}
+                            </td>
+                            <td>
+                                @php $reco = $analyseFatigue[$conducteur->id]['recommandation'] ?? null; @endphp
+                                @if($reco)
+                                    <span class="badge"
+                                        style="background: {{ $analyseFatigue[$conducteur->id]['couleur'] }}; color: #222;">
+                                        {{ $reco['titre'] }}
+                                    </span>
+                                    <br>
+                                    <small>{{ $reco['message'] }}</small>
+                                @else
+                                    <span class="text-muted">-</span>
                                 @endif
                             </td>
                             <td>
