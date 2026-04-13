@@ -81,7 +81,7 @@
                                 <div class="accordion-body">
                                     @if($nbPropositions > 0)
                                     <div class="table-responsive">
-                                        <table class="table table-sm table-bordered table-hover">
+                                        <table class="table table-sm  table-hover">
                                             <thead class="table-info">
                                                 <tr>
                                                     <th>Ligne</th>

@@ -87,7 +87,7 @@
                                             <i class="fas fa-arrow-right"></i> Aller ({{ count($voyagesAller) }})
                                         </h6>
                                         <div class="table-responsive mb-3">
-                                            <table class="table table-sm table-bordered">
+                                            <table class="table table-sm ">
                                                 <thead class="table-primary">
                                                     <tr>
                                                         <th>Ligne</th>
@@ -132,7 +132,7 @@
                                             <i class="fas fa-arrow-left"></i> Retour ({{ count($voyagesRetour) }})
                                         </h6>
                                         <div class="table-responsive mb-3">
-                                            <table class="table table-sm table-bordered">
+                                            <table class="table table-sm ">
                                                 <thead class="table-success">
                                                     <tr>
                                                         <th>Ligne</th>

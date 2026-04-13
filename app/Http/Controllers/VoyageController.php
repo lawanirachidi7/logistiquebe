@@ -69,6 +69,30 @@ class VoyageController extends Controller
         ]);
 
         $data = $request->all();
+        $conducteurId = $data['conducteur_id'];
+        $ligneId = $data['ligne_id'];
+        $sens = $data['sens'];
+        $forcer = $request->has('forcer_consecutif');
+
+        // Vérification du critère : pas deux aller-retour consécutifs sur la même ligne
+        if (!$forcer) {
+            $dernierVoyages = \App\Models\Voyage::where('conducteur_id', $conducteurId)
+                ->orderByDesc('date_depart')
+                ->take(2)
+                ->get();
+            if (
+                $dernierVoyages->count() >= 2 &&
+                $dernierVoyages[0]->ligne_id == $ligneId &&
+                $dernierVoyages[1]->ligne_id == $ligneId &&
+                in_array($dernierVoyages[0]->sens, ['Aller', 'Retour']) &&
+                in_array($dernierVoyages[1]->sens, ['Aller', 'Retour'])
+            ) {
+                return back()->withInput()->withErrors([
+                    'ligne_id' => "Ce conducteur a déjà effectué deux aller-retour consécutifs sur cette ligne. Décochez la sécurité pour forcer."
+                ]);
+            }
+        }
+
         // Si la case "forcer la nuit" est cochée, forcer la valeur à 1 (sinon 0)
         $data['force_nuit'] = $request->has('force_nuit') ? 1 : 0;
         Voyage::create($data);

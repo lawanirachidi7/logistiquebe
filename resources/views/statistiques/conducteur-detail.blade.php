@@ -6,9 +6,6 @@
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
-                    <a href="{{ route('statistiques.conducteurs') }}" class="btn btn-outline-secondary btn-sm mb-2">
-                        <i class="fas fa-arrow-left"></i> Retour aux conducteurs
-                    </a>
                     <h2>
                         <i class="fas fa-user"></i> {{ $conducteur->prenom }} {{ $conducteur->nom }}
                         @if($conducteur->specialiste_nuit)
@@ -21,6 +18,25 @@
                     <p class="text-muted mb-0">
                         <i class="fas fa-map-marker-alt"></i> {{ $conducteur->ville_actuelle }}
                     </p>
+                </div>
+                <div>
+                    <div class="btn-toolbar gap-2" role="toolbar" aria-label="Barre d'actions">
+                        <a href="{{ route('statistiques.conducteurs') }}" class="btn btn-outline-secondary" title="Retour aux conducteurs">
+                            <i class="fas fa-arrow-left me-1"></i> Retour
+                        </a>
+                        <a href="{{ route('repos.conducteur.detail', ['id' => $conducteur->id]) }}" class="btn btn-outline-info" title="Statistiques fatigue">
+                            <i class="fas fa-bed me-1"></i> Fatigue
+                        </a>
+                        <a href="{{ route('voyages.historique') }}?conducteur_id={{ $conducteur->id }}" class="btn btn-outline-primary" title="Historique des voyages">
+                            <i class="fas fa-route me-1"></i> Voyages
+                        </a>
+                        <a href="{{ route('repos.index') }}?conducteur_id={{ $conducteur->id }}" class="btn btn-outline-warning" title="Historique des repos">
+                            <i class="fas fa-bed me-1"></i> Repos
+                        </a>
+                        <a href="{{ route('repos.export', ['conducteur' => $conducteur->id]) }}" class="btn btn-outline-success" title="Exporter les données">
+                            <i class="fas fa-file-excel me-1"></i> Exporter
+                        </a>
+                    </div>
                 </div>
             </div>
 

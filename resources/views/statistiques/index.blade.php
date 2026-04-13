@@ -7,13 +7,13 @@
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2><i class="fas fa-chart-bar"></i> Tableau de Bord Statistiques</h2>
                 <div class="btn-group">
-                    <a href="{{ route('statistiques.conducteurs') }}" class="btn btn-outline-primary">
+                    <a href="{{ route('statistiques.conducteurs', ['date_debut' => $dateDebut, 'date_fin' => $dateFin]) }}" class="btn btn-outline-primary">
                         <i class="fas fa-users"></i> Conducteurs
                     </a>
-                    <a href="{{ route('statistiques.bus') }}" class="btn btn-outline-success">
+                    <a href="{{ route('statistiques.bus', ['date_debut' => $dateDebut, 'date_fin' => $dateFin]) }}" class="btn btn-outline-success">
                         <i class="fas fa-bus"></i> Bus
                     </a>
-                    <a href="{{ route('statistiques.lignes') }}" class="btn btn-outline-info">
+                    <a href="{{ route('statistiques.lignes', ['date_debut' => $dateDebut, 'date_fin' => $dateFin]) }}" class="btn btn-outline-info">
                         <i class="fas fa-route"></i> Lignes
                     </a>
                 </div>
@@ -98,7 +98,7 @@
                     <div class="card h-100">
                         <div class="card-header bg-primary text-black d-flex justify-content-between align-items-center">
                             <span><i class="fas fa-trophy"></i> Top 5 Conducteurs</span>
-                            <a href="{{ route('statistiques.conducteurs') }}" class="btn btn-sm btn-light">Voir tout</a>
+                            <a href="{{ route('statistiques.conducteurs', ['date_debut' => $dateDebut, 'date_fin' => $dateFin]) }}" class="btn btn-sm btn-light">Voir tout</a>
                         </div>
                         <div class="card-body p-0">
                             <table class="table table-hover mb-0">
@@ -125,7 +125,7 @@
                                             @endif
                                         </td>
                                         <td>
-                                            <a href="{{ route('statistiques.conducteur.detail', $conducteur->id) }}">
+                                            <a href="{{ route('statistiques.conducteur.detail', ['id' => $conducteur->id, 'date_debut' => $dateDebut, 'date_fin' => $dateFin]) }}">
                                                 {{ $conducteur->prenom }} {{ $conducteur->nom }}
                                             </a>
                                             <br><small class="text-muted">{{ $conducteur->ville_actuelle }}</small>
@@ -153,7 +153,7 @@
                     <div class="card h-100">
                         <div class="card-header bg-success text-black d-flex justify-content-between align-items-center">
                             <span><i class="fas fa-bus"></i> Top 5 Bus</span>
-                            <a href="{{ route('statistiques.bus') }}" class="btn btn-sm btn-light">Voir tout</a>
+                            <a href="{{ route('statistiques.bus', ['date_debut' => $dateDebut, 'date_fin' => $dateFin]) }}" class="btn btn-sm btn-light">Voir tout</a>
                         </div>
                         <div class="card-body p-0">
                             <table class="table table-hover mb-0">
@@ -180,7 +180,7 @@
                                             @endif
                                         </td>
                                         <td>
-                                            <a href="{{ route('statistiques.bus.detail', $bus->id) }}">
+                                            <a href="{{ route('statistiques.bus.detail', ['id' => $bus->id, 'date_debut' => $dateDebut, 'date_fin' => $dateFin]) }}">
                                                 <strong>{{ $bus->immatriculation }}</strong>
                                             </a>
                                             <br><small class="text-muted">{{ $bus->ville_actuelle }}</small>
@@ -252,7 +252,7 @@
                     <div class="card h-100">
                         <div class="card-header bg-secondary text-black d-flex justify-content-between align-items-center">
                             <span><i class="fas fa-route"></i> Voyages par Ligne</span>
-                            <a href="{{ route('statistiques.lignes') }}" class="btn btn-sm btn-light">Voir tout</a>
+                            <a href="{{ route('statistiques.lignes', ['date_debut' => $dateDebut, 'date_fin' => $dateFin]) }}" class="btn btn-sm btn-light">Voir tout</a>
                         </div>
                         <div class="card-body p-0" style="max-height: 300px; overflow-y: auto;">
                             <table class="table table-sm table-hover mb-0">

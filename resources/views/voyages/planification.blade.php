@@ -96,6 +96,7 @@
                             @enderror
                         </div>
 
+
                         <div class="mb-3">
                             <label for="notes" class="form-label">Notes</label>
                             <textarea class="form-control @error('notes') is-invalid @enderror" id="notes" name="notes">{{ old('notes') }}</textarea>
@@ -104,6 +105,13 @@
                                     <strong>{{ $message }}</strong>
                                 </span>
                             @enderror
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" value="1" id="forcer_consecutif" name="forcer_consecutif" {{ old('forcer_consecutif') ? 'checked' : '' }}>
+                            <label class="form-check-label" for="forcer_consecutif">
+                                Forcer la programmation même si deux aller-retour consécutifs sur la même ligne
+                            </label>
                         </div>
 
                         <div class="d-grid gap-2">

@@ -183,16 +183,17 @@
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-sm table-hover mb-0">
-                            <thead class="table-dark sticky-top">
+                            <thead class="table-dark align-middle">
                                 <tr>
-                                    <th>Date</th>
+                                    <th class="row-num">N°</th>
+                                    <th>Date départ</th>
+                                    <th>Conducteur</th>
+                                    <th>Bus</th>
                                     <th>Ligne</th>
-                                    <th>Conducteur Principal</th>
-                                    <th>Conducteur Second</th>
                                     <th>Période</th>
                                     <th>Sens</th>
-                                    <th>Distance</th>
                                     <th>Statut</th>
+                                    <th class="no-sort no-export d-none d-md-table-cell">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -241,6 +242,11 @@
                                         @else
                                             <span class="badge bg-info">{{ $voyage->statut }}</span>
                                         @endif
+                                    </td>
+                                    <td class="no-sort no-export d-none d-md-table-cell">
+                                        <a href="{{ route('statistiques.voyage.detail', $voyage->id) }}" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i> Voir
+                                        </a>
                                     </td>
                                 </tr>
                                 @empty

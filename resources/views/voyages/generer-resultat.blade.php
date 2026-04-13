@@ -28,7 +28,7 @@
                             <span class="badge bg-primary">{{ count($voyagesAller) }}</span>
                         </h5>
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped datatable">
+                            <table class="table  table-striped datatable">
                                 <thead class="table-primary">
                                     <tr>
                                         <th class="row-num">N°</th>
@@ -78,7 +78,7 @@
                             <span class="badge bg-info">{{ count($voyagesRetour) }}</span>
                         </h5>
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped datatable">
+                            <table class="table  table-striped datatable">
                                 <thead class="table-info">
                                     <tr>
                                         <th class="row-num">N°</th>

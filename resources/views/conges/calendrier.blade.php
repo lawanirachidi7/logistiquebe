@@ -50,7 +50,7 @@
     <div class="card border-0 shadow-sm mb-4">
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-bordered mb-0">
+                <table class="table  mb-0">
                     <thead class="bg-light">
                         <tr>
                             <th class="text-center" style="width: 14.28%">Lun</th>

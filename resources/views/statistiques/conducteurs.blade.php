@@ -183,7 +183,7 @@
         </div>
         <div class="card-body p-0">
             <div class="stats-table-wrapper">
-                <table class="table table-bordered table-hover datatable mb-0 stats-table">
+                <table class="table  table-hover datatable mb-0 stats-table">
                     <thead>
                         <tr>
                             <th class="row-num">#</th>
@@ -232,11 +232,25 @@
                                 <strong>{{ number_format($conducteur->distance_totale ?? 0, 0, ',', ' ') }}</strong>
                             </td>
                             <td>
-                                <a href="{{ route('statistiques.conducteur.detail', $conducteur->id)
-                                    . (request('date_debut') && request('date_fin') ? ('?date_debut=' . request('date_debut') . '&date_fin=' . request('date_fin')) : '') }}"
-                                   class="btn btn-sm btn-info" title="Détails">
-                                    <i class="fas fa-chart-line"></i>
-                                </a>
+                                <div class="btn-group" role="group">
+                                    <a href="{{ route('statistiques.conducteur.detail', $conducteur->id)
+                                        . (request('date_debut') && request('date_fin') ? ('?date_debut=' . request('date_debut') . '&date_fin=' . request('date_fin')) : '') }}"
+                                       class="btn btn-sm btn-info" title="Détails statistiques">
+                                        <i class="fas fa-chart-line"></i>
+                                    </a>
+                                    <a href="{{ route('repos.conducteur.detail', ['id' => $conducteur->id]) }}" class="btn btn-sm btn-outline-info" title="Fatigue">
+                                        <i class="fas fa-bed"></i>
+                                    </a>
+                                    <a href="{{ route('voyages.historique') }}?conducteur_id={{ $conducteur->id }}" class="btn btn-sm btn-outline-primary" title="Voyages">
+                                        <i class="fas fa-route"></i>
+                                    </a>
+                                    <a href="{{ route('repos.index') }}?conducteur_id={{ $conducteur->id }}" class="btn btn-sm btn-outline-warning" title="Repos">
+                                        <i class="fas fa-bed"></i>
+                                    </a>
+                                    <a href="{{ route('repos.export', ['conducteur' => $conducteur->id]) }}" class="btn btn-sm btn-outline-success" title="Exporter">
+                                        <i class="fas fa-file-excel"></i>
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                         @empty

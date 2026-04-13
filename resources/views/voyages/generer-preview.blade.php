@@ -61,7 +61,7 @@
                         <input type="hidden" name="periode" value="{{ count($periodes) > 1 ? 'Les deux' : $periodes[0] }}">
                         
                         <div class="table-responsive">
-                            <table class="table table-bordered table-hover datatable">
+                            <table class="table  table-hover datatable">
                                 <thead class="table-dark">
                                     <tr>
                                         <th class="row-num">N°</th>

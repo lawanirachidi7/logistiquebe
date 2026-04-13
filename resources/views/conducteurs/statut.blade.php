@@ -7,7 +7,7 @@
             <h1>Statut des Conducteurs</h1>
 
             <div class="table-responsive">
-                <table class="table table-striped table-bordered datatable">
+                <table class="table table-striped  datatable">
                     <thead>
                         <tr>
                             <th class="row-num">N°</th>

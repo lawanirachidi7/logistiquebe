@@ -26,6 +26,26 @@
         </div>
     </div>
 
+    <!-- Action Bar -->
+    <div class="mb-3">
+        <div class="btn-toolbar gap-2" role="toolbar" aria-label="Barre d'actions">
+            <a href="{{ url()->previous() }}" class="btn btn-outline-secondary" title="Retour">
+                <i class="fas fa-arrow-left me-1"></i> Retour
+            </a>
+            <a href="{{ route('conducteurs.show', ['conducteur' => $conducteur->id]) }}" class="btn btn-outline-info" title="Statistiques détaillées">
+                <i class="fas fa-chart-bar me-1"></i> Statistiques
+            </a>
+            <a href="{{ route('voyages.historique') }}?conducteur_id={{ $conducteur->id }}" class="btn btn-outline-primary" title="Historique des voyages">
+                <i class="fas fa-route me-1"></i> Historique voyages
+            </a>
+            <a href="{{ route('repos.index') }}?conducteur_id={{ $conducteur->id }}" class="btn btn-outline-warning" title="Historique des repos">
+                <i class="fas fa-bed me-1"></i> Historique repos
+            </a>
+            <a href="{{ route('statistiques.export.conducteurs', ['conducteur_id' => $conducteur->id]) }}" class="btn btn-outline-success" title="Exporter les données">
+                <i class="fas fa-file-excel me-1"></i> Exporter
+            </a>
+        </div>
+    </div>
     <div class="row g-4">
         <!-- Score principal -->
         <div class="col-lg-4">

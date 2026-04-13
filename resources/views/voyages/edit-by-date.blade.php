@@ -44,7 +44,7 @@
                         </div>
                         
                         <div class="table-responsive">
-                            <table class="table table-bordered table-hover" id="voyages-table">
+                            <table class="table  table-hover" id="voyages-table">
                                 <thead class="table-dark">
                                     <tr>
                                         <th style="width: 80px;">Ordre</th>

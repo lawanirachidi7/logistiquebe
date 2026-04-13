@@ -15,7 +15,7 @@
             <form action="{{ route('bus.disponibilite.update') }}" method="POST">
                 @csrf
                 <div class="table-responsive">
-                    <table class="table table-striped table-bordered datatable">
+                    <table class="table table-striped  datatable">
                         <thead>
                             <tr>
                                 <th class="row-num">N°</th>
