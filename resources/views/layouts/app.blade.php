@@ -41,6 +41,8 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.bootstrap5.min.css">
+    <!-- DataTables FixedHeader CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/3.4.0/css/fixedHeader.bootstrap5.min.css">
     
     <!-- Select2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -1520,6 +1522,12 @@
                         </a>
                     </li>
                     <li class="sidebar-nav-item">
+                        <a href="{{ route('admin.typebus.index') }}" class="sidebar-nav-link {{ request()->routeIs('admin.typebus.*') ? 'active' : '' }}">
+                            <i class="fas fa-cogs"></i>
+                            <span>Types de bus</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-item">
                         <a href="{{ route('villes.index') }}" class="sidebar-nav-link {{ request()->routeIs('villes.*') ? 'active' : '' }}">
                             <i class="fas fa-city"></i>
                             <span>Villes</span>
@@ -1745,6 +1753,9 @@
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+    <!-- DataTables FixedHeader JS -->
+    <script src="https://cdn.datatables.net/fixedheader/3.4.0/js/dataTables.fixedHeader.min.js"></script>
+    <script src="https://cdn.datatables.net/fixedheader/3.4.0/js/fixedHeader.bootstrap5.min.js"></script>
     <!-- DataTables Buttons -->
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.bootstrap5.min.js"></script>
@@ -1786,6 +1797,7 @@
         $(document).ready(function() {
             var table = $('.datatable').DataTable({
                 responsive: true,
+                fixedHeader: true,
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/fr-FR.json'
                 },

@@ -80,7 +80,7 @@
 
             <!-- Tableau des lignes -->
             <div class="card">
-                <div class="card-header bg-info text-white">
+                <div class="card-header bg-info text-black">
                     <i class="fas fa-table"></i> Liste Détaillée des Lignes
                 </div>
                 <div class="card-body p-0">

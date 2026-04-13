@@ -96,7 +96,7 @@
                 <!-- Répartition Aller/Retour -->
                 <div class="col-md-4">
                     <div class="card h-100">
-                        <div class="card-header bg-info text-white">
+                        <div class="card-header bg-info text-black">
                             <i class="fas fa-chart-pie"></i> Répartition Aller/Retour
                         </div>
                         <div class="card-body">
@@ -130,7 +130,7 @@
                 <!-- Conducteurs ayant utilisé ce bus -->
                 <div class="col-md-4">
                     <div class="card h-100">
-                        <div class="card-header bg-primary text-white">
+                        <div class="card-header bg-primary text-black">
                             <i class="fas fa-users"></i> Top Conducteurs
                         </div>
                         <div class="card-body p-0">
@@ -153,7 +153,7 @@
                 <!-- Lignes parcourues -->
                 <div class="col-md-4">
                     <div class="card h-100">
-                        <div class="card-header bg-success text-white">
+                        <div class="card-header bg-success text-black">
                             <i class="fas fa-route"></i> Lignes Parcourues
                         </div>
                         <div class="card-body p-0">
@@ -177,7 +177,7 @@
 
             <!-- Historique des voyages -->
             <div class="card">
-                <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                <div class="card-header bg-secondary text-black d-flex justify-content-between align-items-center">
                     <span><i class="fas fa-history"></i> Historique des Voyages ({{ $voyages->count() }})</span>
                 </div>
                 <div class="card-body p-0">

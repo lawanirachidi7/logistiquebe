@@ -268,26 +268,35 @@ class StatistiqueController extends Controller
         })->map->count();
 
         // Lignes les plus fréquentes
-        $lignesFrequentes = $voyages->groupBy('ligne_id')
+        $lignesFrequente = $voyages->groupBy('ligne_id')
             ->map(function($group) {
                 return [
                     'ligne' => $group->first()->ligne,
                     'count' => $group->count(),
                 ];
             })
-            ->sortByDesc('count')
-            ->take(5);
+            ->sortByDesc('count');
 
-        // Bus utilisés
-        $busUtilises = $voyages->groupBy('bus_id')
+        $lignesFrequentes= $lignesFrequente->take(5);
+        $lignesFrequentesAll = $lignesFrequente->All();
+
+           
+
+
+
+
+        // Bus utilisés (top 5)
+        $busFrequente = $voyages->groupBy('bus_id')
             ->map(function($group) {
                 return [
                     'bus' => $group->first()->bus,
                     'count' => $group->count(),
                 ];
             })
-            ->sortByDesc('count')
-            ->take(5);
+            ->sortByDesc('count');
+
+        $busUtilises = $busFrequente->take(5);
+        $busUtilisesAll = $busFrequente->all();
 
         return view('statistiques.conducteur-detail', compact(
             'conducteur',
@@ -297,7 +306,9 @@ class StatistiqueController extends Controller
             'lignesFrequentes',
             'busUtilises',
             'dateDebut',
-            'dateFin'
+            'dateFin',
+            'lignesFrequentesAll',
+            'busUtilisesAll'
         ));
     }
 

@@ -1,3 +1,13 @@
+@php
+    $dateDebut = request('date_debut');
+    $dateFin = request('date_fin');
+    if (!$dateDebut || !$dateFin) {
+        $defaultDebut = $dateDebut ?: now()->startOfMonth()->format('Y-m-d');
+        $defaultFin = $dateFin ?: now()->format('Y-m-d');
+        header('Location: ' . url()->current() . '?date_debut=' . $defaultDebut . '&date_fin=' . $defaultFin);
+        exit;
+    }
+@endphp
 @extends('layouts.app')
 
 @push('styles')
@@ -222,7 +232,8 @@
                                 <strong>{{ number_format($conducteur->distance_totale ?? 0, 0, ',', ' ') }}</strong>
                             </td>
                             <td>
-                                <a href="{{ route('statistiques.conducteur.detail', $conducteur->id) }}" 
+                                <a href="{{ route('statistiques.conducteur.detail', $conducteur->id)
+                                    . (request('date_debut') && request('date_fin') ? ('?date_debut=' . request('date_debut') . '&date_fin=' . request('date_fin')) : '') }}"
                                    class="btn btn-sm btn-info" title="Détails">
                                     <i class="fas fa-chart-line"></i>
                                 </a>
@@ -242,3 +253,5 @@
     </div>
 </div>
 @endsection
+
+

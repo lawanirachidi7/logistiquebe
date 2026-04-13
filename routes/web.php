@@ -228,4 +228,14 @@ Route::middleware(['auth'])->group(function () {
         Route::patch('users/{user}/toggle', [App\Http\Controllers\UserManagementController::class, 'toggleStatus'])->name('users.toggle');
         Route::patch('users/{user}/reset-password', [App\Http\Controllers\UserManagementController::class, 'resetPassword'])->name('users.reset-password');
     });
+
+    // Gestion des types de bus (admin)
+    Route::prefix('admin/typebus')->name('admin.typebus.')->middleware(['auth'])->group(function() {
+        Route::get('/', [App\Http\Controllers\TypeBusController::class, 'index'])->name('index');
+        Route::get('/create', [App\Http\Controllers\TypeBusController::class, 'create'])->name('create');
+        Route::post('/', [App\Http\Controllers\TypeBusController::class, 'store'])->name('store');
+        Route::get('/{typebus}/edit', [App\Http\Controllers\TypeBusController::class, 'edit'])->name('edit');
+        Route::put('/{typebus}', [App\Http\Controllers\TypeBusController::class, 'update'])->name('update');
+        Route::delete('/{typebus}', [App\Http\Controllers\TypeBusController::class, 'destroy'])->name('destroy');
+    });
 });

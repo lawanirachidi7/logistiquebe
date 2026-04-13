@@ -93,7 +93,7 @@
                 <!-- Répartition Jour/Nuit et Aller/Retour -->
                 <div class="col-md-4">
                     <div class="card h-100">
-                        <div class="card-header bg-info text-white">
+                        <div class="card-header bg-info text-black">
                             <i class="fas fa-chart-pie"></i> Répartition
                         </div>
                         <div class="card-body">
@@ -136,8 +136,44 @@
                 <!-- Lignes les plus fréquentes -->
                 <div class="col-md-4">
                     <div class="card h-100">
-                        <div class="card-header bg-primary text-white">
-                            <i class="fas fa-route"></i> Lignes Fréquentes
+                        <div class="card-header bg-primary text-black d-flex justify-content-between align-items-center">
+                            <span>
+                                <i class="fas fa-route"></i> Lignes Fréquentes
+                                <span class="badge bg-light text-primary ms-2" title="Nombre de lignes différentes">
+                                    {{ count($lignesFrequentes) }}
+                                </span>
+                            </span>
+                            <button type="button" class="btn btn-outline-dark btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#modalLignesConducteur" title="Voir toutes les lignes fréquentées">
+                                <i class="fas fa-list"></i> Voir tout
+                            </button>
+                        <!-- Modal Lignes Fréquentées -->
+                        <div class="modal fade" id="modalLignesConducteur" tabindex="-1" aria-labelledby="modalLignesConducteurLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-primary text-white">
+                                        <h5 class="modal-title" id="modalLignesConducteurLabel">
+                                            <i class="fas fa-route"></i> Lignes fréquentées par {{ $conducteur->prenom }} {{ $conducteur->nom }}
+                                        </h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                                    </div>
+                                    <div class="modal-body p-0">
+                                        <ul class="list-group list-group-flush">
+                                            @forelse($lignesFrequentesAll as  $item)
+                                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                    {{ $item['ligne']->nom ?? 'Inconnu' }}
+                                                    <span class="badge bg-primary rounded-pill">{{ $item['count'] }}</span>
+                                                </li>
+                                            @empty
+                                                <li class="list-group-item text-muted text-center">Aucune donnée</li>
+                                            @endforelse
+                                        </ul>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         </div>
                         <div class="card-body p-0">
                             <ul class="list-group list-group-flush">
@@ -157,8 +193,44 @@
                 <!-- Bus utilisés -->
                 <div class="col-md-4">
                     <div class="card h-100">
-                        <div class="card-header bg-success text-white">
-                            <i class="fas fa-bus"></i> Bus Utilisés
+                        <div class="card-header bg-success text-black d-flex justify-content-between align-items-center">
+                            <span>
+                                <i class="fas fa-bus"></i> Bus Utilisés
+                                <span class="badge bg-light text-success ms-2" title="Nombre de bus différents">
+                                    {{ count($busUtilises) }}
+                                </span>
+                            </span>
+                            <button type="button" class="btn btn-outline-dark btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#modalBusUtilisesConducteur" title="Voir tous les bus utilisés">
+                                <i class="fas fa-list"></i> Voir tout
+                            </button>
+                            <!-- Modal Bus Utilisés -->
+                            <div class="modal fade" id="modalBusUtilisesConducteur" tabindex="-1" aria-labelledby="modalBusUtilisesConducteurLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-success text-white">
+                                            <h5 class="modal-title" id="modalBusUtilisesConducteurLabel">
+                                                <i class="fas fa-bus"></i> Bus utilisés par {{ $conducteur->prenom }} {{ $conducteur->nom }}
+                                            </h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                                        </div>
+                                        <div class="modal-body p-0">
+                                            <ul class="list-group list-group-flush">
+                                                @forelse($busUtilisesAll as $item)
+                                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                        {{ $item['bus']->immatriculation ?? 'Inconnu' }}
+                                                        <span class="badge bg-success rounded-pill">{{ $item['count'] }}</span>
+                                                    </li>
+                                                @empty
+                                                    <li class="list-group-item text-muted text-center">Aucune donnée</li>
+                                                @endforelse
+                                            </ul>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="card-body p-0">
                             <ul class="list-group list-group-flush">
@@ -178,7 +250,7 @@
 
             <!-- Historique des voyages -->
             <div class="card">
-                <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                <div class="card-header bg-secondary text-black d-flex justify-content-between align-items-center">
                     <span><i class="fas fa-history"></i> Historique des Voyages ({{ $voyages->count() }})</span>
                 </div>
                 <div class="card-body p-0">

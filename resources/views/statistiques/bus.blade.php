@@ -1,3 +1,13 @@
+@php
+    $dateDebut = request('date_debut');
+    $dateFin = request('date_fin');
+    if (!$dateDebut || !$dateFin) {
+        $defaultDebut = $dateDebut ?: now()->startOfMonth()->format('Y-m-d');
+        $defaultFin = $dateFin ?: now()->format('Y-m-d');
+        header('Location: ' . url()->current() . '?date_debut=' . $defaultDebut . '&date_fin=' . $defaultFin);
+        exit;
+    }
+@endphp
 @extends('layouts.app')
 
 @section('content')
@@ -85,7 +95,7 @@
             <!-- Répartition par type de bus -->
             @if($parTypeBus->count() > 0)
             <div class="card mb-4">
-                <div class="card-header bg-info text-white">
+                <div class="card-header bg-info text-black">
                     <i class="fas fa-chart-pie"></i> Répartition par Type de Bus
                 </div>
                 <div class="card-body">
@@ -118,12 +128,12 @@
 
             <!-- Tableau des bus -->
             <div class="card">
-                <div class="card-header bg-success text-white">
+                <div class="card-header bg-success text-black">
                     <i class="fas fa-table"></i> Liste Détaillée des Bus
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-bordered table-hover datatable mb-0">
+                        <table class="table table-hover datatable mb-0">
                             <thead class="table-dark">
                                 <tr>
                                     <th class="row-num">#</th>
@@ -148,20 +158,12 @@
                                     <td><strong>{{ $b->immatriculation }}</strong></td>
                                     <td>{{ $b->type_bus_nom ?? '-' }}</td>
                                     <td>{{ $b->ville_actuelle ?? '-' }}</td>
-                                    <td class="text-center">
-                                        <span class="badge bg-success fs-6">{{ $b->nb_voyages }}</span>
-                                    </td>
-                                    <td class="text-center">
-                                        <span class="badge bg-warning text-dark">{{ $b->voyages_jour ?? 0 }}</span>
-                                    </td>
-                                    <td class="text-center">
-                                        <span class="badge bg-dark">{{ $b->voyages_nuit ?? 0 }}</span>
-                                    </td>
+                                    <td class="text-center"><span class="badge bg-success fs-6">{{ $b->nb_voyages }}</span></td>
+                                    <td class="text-center"><span class="badge bg-warning text-dark">{{ $b->voyages_jour ?? 0 }}</span></td>
+                                    <td class="text-center"><span class="badge bg-dark">{{ $b->voyages_nuit ?? 0 }}</span></td>
                                     <td class="text-center">{{ $b->voyages_aller ?? 0 }}</td>
                                     <td class="text-center">{{ $b->voyages_retour ?? 0 }}</td>
-                                    <td class="text-end">
-                                        <strong>{{ number_format($b->distance_parcourue ?? 0, 0, ',', ' ') }} km</strong>
-                                    </td>
+                                    <td class="text-end"><strong>{{ number_format($b->distance_parcourue ?? 0, 0, ',', ' ') }} km</strong></td>
                                     <td>
                                         @if($b->dernier_voyage)
                                             {{ \Carbon\Carbon::parse($b->dernier_voyage)->format('d/m/Y H:i') }}
@@ -177,7 +179,8 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <a href="{{ route('statistiques.bus.detail', $b->id) }}" 
+                                        <a href="{{ route('statistiques.bus.detail', $b->id)
+                                            . (request('date_debut') && request('date_fin') ? ('?date_debut=' . request('date_debut') . '&date_fin=' . request('date_fin')) : '') }}"
                                            class="btn btn-sm btn-outline-success" title="Détails">
                                             <i class="fas fa-chart-line"></i>
                                         </a>

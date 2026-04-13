@@ -96,7 +96,7 @@
                 <!-- Top Conducteurs -->
                 <div class="col-md-6 mb-4">
                     <div class="card h-100">
-                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <div class="card-header bg-primary text-black d-flex justify-content-between align-items-center">
                             <span><i class="fas fa-trophy"></i> Top 5 Conducteurs</span>
                             <a href="{{ route('statistiques.conducteurs') }}" class="btn btn-sm btn-light">Voir tout</a>
                         </div>
@@ -151,7 +151,7 @@
                 <!-- Top Bus -->
                 <div class="col-md-6 mb-4">
                     <div class="card h-100">
-                        <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                        <div class="card-header bg-success text-black d-flex justify-content-between align-items-center">
                             <span><i class="fas fa-bus"></i> Top 5 Bus</span>
                             <a href="{{ route('statistiques.bus') }}" class="btn btn-sm btn-light">Voir tout</a>
                         </div>
@@ -208,7 +208,7 @@
                 <!-- Voyages par Période -->
                 <div class="col-md-4 mb-4">
                     <div class="card h-100">
-                        <div class="card-header bg-info text-white">
+                        <div class="card-header bg-info text-black">
                             <i class="fas fa-sun"></i> Répartition Jour/Nuit
                         </div>
                         <div class="card-body">
@@ -250,7 +250,7 @@
                 <!-- Voyages par Ligne -->
                 <div class="col-md-8 mb-4">
                     <div class="card h-100">
-                        <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                        <div class="card-header bg-secondary text-black d-flex justify-content-between align-items-center">
                             <span><i class="fas fa-route"></i> Voyages par Ligne</span>
                             <a href="{{ route('statistiques.lignes') }}" class="btn btn-sm btn-light">Voir tout</a>
                         </div>
