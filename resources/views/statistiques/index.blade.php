@@ -171,15 +171,13 @@
                         </div>
                     </div>
                 </div>
-                        @push('scripts')
-                        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                        <!-- Chart Data Injection: must be before Vite JS -->
                         <script>
                         window.topBusLabels = @json(collect($topBus)->pluck('immatriculation'));
                         window.topBusData = @json(collect($topBus)->pluck('nb_voyages'));
                         window.topConducteurLabels = @json(collect($topConducteurs)->map(function($c){ return $c->prenom.' '.$c->nom; }));
                         window.topConducteurData = @json(collect($topConducteurs)->pluck('nb_voyages'));
                         </script>
-                        @endpush
 
                 <!-- Top Bus -->
                 <div class="col-md-6 mb-4">

@@ -97,6 +97,65 @@
         </div>
     </div>
 
+    <!-- Chart Data Injection for Dashboard (last 30 days) -->
+    @php
+        // Use last 30 days for dashboard quick stats
+        $dateDebut = now()->subDays(30)->format('Y-m-d');
+        $dateFin = now()->format('Y-m-d');
+        $topBus = \App\Models\Bus::select('bus.*')
+            ->selectRaw('COUNT(voyages.id) as nb_voyages')
+            ->leftJoin('voyages', function($join) use ($dateDebut, $dateFin) {
+                $join->on('bus.id', '=', 'voyages.bus_id')
+                    ->whereRaw("DATE(voyages.date_depart) >= ?", [$dateDebut])
+                    ->whereRaw("DATE(voyages.date_depart) <= ?", [$dateFin]);
+            })
+            ->groupBy('bus.id')
+            ->orderByDesc('nb_voyages')
+            ->limit(5)
+            ->get();
+        $topConducteurs = \App\Models\Conducteur::select('conducteurs.*')
+            ->selectRaw('COUNT(voyages.id) as nb_voyages')
+            ->leftJoin('voyages', function($join) use ($dateDebut, $dateFin) {
+                $join->on('conducteurs.id', '=', 'voyages.conducteur_id')
+                    ->whereRaw("DATE(voyages.date_depart) >= ?", [$dateDebut])
+                    ->whereRaw("DATE(voyages.date_depart) <= ?", [$dateFin]);
+            })
+            ->groupBy('conducteurs.id')
+            ->orderByDesc('nb_voyages')
+            ->limit(5)
+            ->get();
+    @endphp
+    <script>
+        window.topBusLabels = @json(collect($topBus)->pluck('immatriculation'));
+        window.topBusData = @json(collect($topBus)->pluck('nb_voyages'));
+        window.topConducteurLabels = @json(collect($topConducteurs)->map(function($c){ return $c->prenom.' '.$c->nom; }));
+        window.topConducteurData = @json(collect($topConducteurs)->pluck('nb_voyages'));
+    </script>
+
+    <!-- Graphiques Stat -->
+    <div class="row mb-4">
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-success text-black">
+                    <i class="fas fa-chart-bar"></i> Bus les plus utilisés (Top 5)
+                </div>
+                <div class="card-body">
+                    <canvas id="topBusChart" height="491" style="display: block; box-sizing: border-box; height: 434.4px; width: 592.3px;" width="670"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-primary text-black">
+                    <i class="fas fa-chart-pie"></i> Répartition des voyages par conducteur (Top 5)
+                </div>
+                <div class="card-body">
+                    <canvas id="topConducteurChart" height="670" style="display: block; box-sizing: border-box; height: 592.3px; width: 592px;" width="670"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Derniers Voyages -->
     <div class="row">
         <div class="col-12">
