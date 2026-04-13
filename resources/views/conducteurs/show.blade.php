@@ -53,7 +53,9 @@
         </div>
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">Détails du Conducteur</div>
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-user me-2"></i>Détails du Conducteur</h5>
+                </div>
                 <div class="card-body">
                     <div class="mb-3 row">
                         <label class="col-sm-4 col-form-label fw-bold">Nom</label>
@@ -138,7 +140,10 @@
         <div class="col-lg-4">
          @if($conducteur->voyages && $conducteur->voyages->count() > 0)
             <div class="card ">
-                <div class="card-header">Historique des voyages</div>
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-history me-2"></i>Historique des Voyages</h5>
+
+                </div>
                 <div class="card-body p-0">
                     <div style="max-height: 450px; overflow-y: auto;">
                         <table class="table table-sm table-hover mb-0">
